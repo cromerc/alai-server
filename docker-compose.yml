@@ -1,0 +1,66 @@
+version: '3.7'
+
+x-common-variables: &common-variables
+  MYSQL_DATABASE: ${MYSQL_DATABASE}
+  MYSQL_USER: ${MYSQL_USER}
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+services:
+  database:
+    image: mariadb:10.8.3
+    restart: on-failure
+    cap_add:
+      - SYS_NICE
+    volumes:
+      - database:/var/lib/mysql
+    networks:
+      - network
+    ports:
+      - "${MYSQL_PORT}:3306"
+    environment:
+      <<: *common-variables
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: ${MYSQL_HOST}
+
+  nginx:
+    image: nginx:1.23.0
+    depends_on:
+      - backend
+    restart: on-failure
+    volumes:
+      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "./game:/usr/share/nginx/html"
+    networks:
+      - network
+    ports:
+      - "4050:80"
+
+  frontend:
+    restart: on-failure
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    build:
+      dockerfile: Dockerfile
+      context: ./frontend
+    networks:
+      - network
+
+  backend:
+    restart: on-failure
+    build:
+      dockerfile: Dockerfile
+      context: "./backend"
+    depends_on:
+      - database
+    networks:
+      - network
+    environment:
+      <<: *common-variables
+      MYSQL_HOST_IP: ${MYSQL_HOST_IP}
+
+volumes:
+  database:
+
+networks:
+  network:

@@ -124,7 +124,11 @@ func Login(writer http.ResponseWriter, request *http.Request, params httprouter.
 		Token string `json:"token"`
 	}
 
-	tokenString, _ := utils.GenerateJWT("chris@cromer.cl", "cromer")
+	tokenString, err := utils.GenerateJWT("chris@cromer.cl", "cromer")
+	if err != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	token := Token{Token: tokenString}
 

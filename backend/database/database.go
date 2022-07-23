@@ -1,8 +1,9 @@
 package database
 
 import (
-	"backend/models"
 	"os"
+
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/models"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

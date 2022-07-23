@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"backend/controllers"
-	"backend/middlewares"
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/controllers"
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/middlewares"
 
 	"github.com/julienschmidt/httprouter"
 )

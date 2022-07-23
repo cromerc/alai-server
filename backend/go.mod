@@ -1,4 +1,4 @@
-module backend
+module git.cromer.cl/Proyecto-Titulo/alai-server/backend
 
 go 1.18
 

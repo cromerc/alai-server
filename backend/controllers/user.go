@@ -1,13 +1,14 @@
 package controllers
 
 import (
-	"backend/database"
-	"backend/models"
-	"backend/utils"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
+
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/database"
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/models"
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/utils"
 
 	"github.com/julienschmidt/httprouter"
 )

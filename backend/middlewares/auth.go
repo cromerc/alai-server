@@ -1,10 +1,11 @@
 package middlewares
 
 import (
-	"backend/utils"
 	"errors"
 	"net/http"
 	"strings"
+
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/utils"
 
 	"github.com/julienschmidt/httprouter"
 )

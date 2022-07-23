@@ -1,13 +1,14 @@
 package controllers
 
 import (
-	"backend/database"
-	"backend/models"
-	"backend/utils"
 	"compress/gzip"
 	"encoding/base64"
 	"encoding/json"
 	"net/http"
+
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/database"
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/models"
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/utils"
 
 	"github.com/julienschmidt/httprouter"
 	"gorm.io/gorm"

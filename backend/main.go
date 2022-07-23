@@ -1,10 +1,11 @@
 package main
 
 import (
-	"backend/database"
-	"backend/routes"
 	"fmt"
 	"os"
+
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/database"
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/routes"
 
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"

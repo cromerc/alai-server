@@ -23,7 +23,7 @@ services:
       MYSQL_ROOT_HOST: ${MYSQL_HOST}
 
   nginx:
-    image: nginx:1.23.0
+    image: nginx:1.23.1
     depends_on:
       - backend
     restart: on-failure

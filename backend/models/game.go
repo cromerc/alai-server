@@ -10,7 +10,7 @@ import (
 type Game struct {
 	gorm.Model
 	ID             uint64       `json:"ID" gorm:"primaryKey"`
-	PlayerID       uint64       `json:"player_id"`
+	PlayerID       *uint64      `json:"player_id"`
 	Player         Player       `json:"player"`
 	LevelID        uint64       `json:"level_id" gorm:"not null"`
 	Level          Level        `json:"level" gorm:"not null"`
@@ -44,7 +44,9 @@ var cachedObjectNames = make(map[string]uint64)
 
 func (game *Game) BeforeCreate(tx *gorm.DB) error {
 	// Use the same player ID if the RUT is already in the DB
-	tx.Model(Player{}).Where(&Player{RUT: game.Player.RUT}).Find(&game.Player)
+	if strings.TrimSpace(game.Player.RUT) != "" {
+		tx.Model(Player{}).Where(&Player{RUT: game.Player.RUT}).Find(&game.Player)
+	}
 
 	tx.Model(GodotVersion{}).Where(&GodotVersion{String: game.GodotVersion.String}).Find(&game.GodotVersion)
 

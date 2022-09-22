@@ -10,7 +10,7 @@ import (
 type Game struct {
 	gorm.Model
 	ID             uint64       `json:"ID" gorm:"primaryKey"`
-	PlayerID       uint64       `json:"player_id" gorm:"not null"`
+	PlayerID       uint64       `json:"player_id"`
 	Player         Player       `json:"player"`
 	LevelID        uint64       `json:"level_id" gorm:"not null"`
 	Level          Level        `json:"level" gorm:"not null"`

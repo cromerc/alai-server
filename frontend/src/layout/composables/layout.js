@@ -3,11 +3,11 @@ import { toRefs, reactive, computed } from 'vue';
 const contextPath = import.meta.env.BASE_URL;
 
 const layoutConfig = reactive({
-    ripple: false,
-    darkTheme: false,
+    ripple: true,
+    darkTheme: true,
     inputStyle: 'outlined',
     menuMode: 'static',
-    theme: 'lara-light-indigo',
+    theme: 'lara-dark-blue',
     scale: 14,
     activeMenuItem: null
 });

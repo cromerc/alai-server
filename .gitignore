@@ -98,3 +98,4 @@ coverage
 
 backend/backend
 backend/__debug_bin
+backend/test_coverage.html

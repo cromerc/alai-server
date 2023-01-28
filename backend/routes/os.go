@@ -8,9 +8,9 @@ import (
 )
 
 func OSRoutes(router *httprouter.Router) {
-	router.GET("/os", controllers.ListUsers)
-	router.GET("/os/:id", controllers.GetUser)
-	router.POST("/os", middlewares.Authenticate(controllers.CreateUser))
-	router.PATCH("/os/:id", middlewares.Authenticate(controllers.UpdateUser))
-	router.DELETE("/os/:id", middlewares.Authenticate(controllers.DeleteUser))
+	router.GET("/os", controllers.ListOS)
+	router.GET("/os/:id", controllers.GetOS)
+	router.POST("/os", middlewares.Authenticate(controllers.CreateOS))
+	router.PATCH("/os/:id", middlewares.Authenticate(controllers.UpdateOS))
+	router.DELETE("/os/:id", middlewares.Authenticate(controllers.DeleteOS))
 }

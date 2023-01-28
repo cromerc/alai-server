@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func PostGame(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func CreateGame(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
@@ -43,7 +43,7 @@ func PostGame(writer http.ResponseWriter, request *http.Request, params httprout
 		return
 	}
 
-	result := postGame(game, gdb)
+	result := createGame(game, gdb)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
@@ -53,7 +53,7 @@ func PostGame(writer http.ResponseWriter, request *http.Request, params httprout
 	}
 }
 
-func postGame(game models.Game, gdb *gorm.DB) *gorm.DB {
+func createGame(game models.Game, gdb *gorm.DB) *gorm.DB {
 	return gdb.Create(&game)
 }
 
@@ -90,7 +90,7 @@ func GetGame(writer http.ResponseWriter, request *http.Request, params httproute
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else if result.RowsAffected == 0 {
-		utils.JSONErrorOutput(writer, http.StatusNotFound, "A game with the ID "+params.ByName("id")+" does not exist!")
+		writer.WriteHeader(http.StatusNotFound)
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")

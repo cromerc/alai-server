@@ -32,18 +32,18 @@ func Serve(router *httprouter.Router) {
 
 	// Listen for CTRL-C(SIGTERM)
 	sigterm := make(chan os.Signal)
-    signal.Notify(sigterm, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(sigterm, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
 		<-sigterm
 		// When CTRL-C is pressed shutdown the server
 		if err := server.Shutdown(context.Background()); err != nil {
-            log.Printf("HTTP server Shutdown: %v", err)
-        }
+			log.Printf("HTTP server Shutdown: %v", err)
+		}
 		close(idleConnsClosed)
 		os.Exit(0)
 	}()
-	
+
 	// Run the server
 	if err := server.ListenAndServe(); err != http.ErrServerClosed {
 		log.Fatalf("HTTP server ListenAndServe: %v", err)

@@ -8,6 +8,7 @@ import (
 	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/database"
 	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/models"
 	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/utils"
+
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -57,7 +58,7 @@ func CreateOS(writer http.ResponseWriter, request *http.Request, params httprout
 	decoder := json.NewDecoder(request.Body)
 
 	err := decoder.Decode(&os)
-	if (err != nil) {
+	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -80,13 +81,13 @@ func UpdateOS(writer http.ResponseWriter, request *http.Request, params httprout
 	decoder := json.NewDecoder(request.Body)
 
 	err := decoder.Decode(&os)
-	if (err != nil) {
+	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	os.ID, err = strconv.ParseUint(params.ByName("id"), 10, 64)
-	if (err != nil) {
+	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}

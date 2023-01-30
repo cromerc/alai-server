@@ -23,7 +23,7 @@ func Login(writer http.ResponseWriter, request *http.Request, params httprouter.
 	decoder := json.NewDecoder(request.Body)
 
 	err := decoder.Decode(&receivedUser)
-	if (err != nil) {
+	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -115,7 +115,7 @@ func CreateUser(writer http.ResponseWriter, request *http.Request, params httpro
 	decoder := json.NewDecoder(request.Body)
 
 	err := decoder.Decode(&user)
-	if (err != nil) {
+	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -140,13 +140,13 @@ func UpdateUser(writer http.ResponseWriter, request *http.Request, params httpro
 	decoder := json.NewDecoder(request.Body)
 
 	err := decoder.Decode(&user)
-	if (err != nil) {
+	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	user.ID, err = strconv.ParseUint(params.ByName("id"), 10, 64)
-	if (err != nil) {
+	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}

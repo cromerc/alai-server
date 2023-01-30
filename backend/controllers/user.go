@@ -17,13 +17,29 @@ func Login(writer http.ResponseWriter, request *http.Request, params httprouter.
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
+	var receivedUser models.User
 	var user models.User
 
-	gdb.Model(models.User{}).Where(&models.User{Username: request.FormValue("username")}).Find(&user)
+	decoder := json.NewDecoder(request.Body)
 
-	err := user.CheckPassword(request.FormValue("password"))
+	err := decoder.Decode(&receivedUser)
+	if (err != nil) {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	result := gdb.Model(models.User{}).Where(&models.User{Username: receivedUser.Username}).Find(&user)
+	if result.Error != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
+		return
+	} else if result.RowsAffected == 0 {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, errors.New("incorrect user or password").Error())
+		return
+	}
+
+	err = user.CheckPassword(receivedUser.Password)
 	if err != nil {
-		utils.JSONErrorOutput(writer, http.StatusBadRequest, errors.New("incorrect password").Error())
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, errors.New("incorrect user or password").Error())
 		return
 	}
 
@@ -94,11 +110,17 @@ func CreateUser(writer http.ResponseWriter, request *http.Request, params httpro
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	user := models.User{
-		Name:  request.FormValue("name"),
-		Email: request.FormValue("email"),
+	var user models.User
+
+	decoder := json.NewDecoder(request.Body)
+
+	err := decoder.Decode(&user)
+	if (err != nil) {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
 	}
-	user.HashPassword(request.FormValue("password"))
+
+	user.HashPassword(user.Password)
 
 	result := gdb.Create(&user)
 	if result.Error != nil {
@@ -115,24 +137,23 @@ func UpdateUser(writer http.ResponseWriter, request *http.Request, params httpro
 
 	var user models.User
 
-	userID, _ := strconv.ParseUint(params.ByName("id"), 10, 64)
+	decoder := json.NewDecoder(request.Body)
 
-	gdb.Model(models.User{}).Where(&models.User{ID: userID}).Find(&user)
-
-	if request.FormValue("password") != "" {
-		var oldPassword = request.FormValue("old_password")
-		err := user.CheckPassword(oldPassword)
-		if err != nil {
-			utils.JSONErrorOutput(writer, http.StatusBadRequest, errors.New("incorrect password").Error())
-			return
-
-		} else {
-			user.HashPassword(request.FormValue("password"))
-		}
+	err := decoder.Decode(&user)
+	if (err != nil) {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
 	}
 
-	user.Name = request.FormValue("name")
-	user.Email = request.FormValue("email")
+	user.ID, err = strconv.ParseUint(params.ByName("id"), 10, 64)
+	if (err != nil) {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if user.Password != "" {
+		user.HashPassword(user.Password)
+	}
 
 	result := gdb.Updates(&user)
 	if result.Error != nil {

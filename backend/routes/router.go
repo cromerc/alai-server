@@ -16,9 +16,10 @@ import (
 func Initialize() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/", index)
-	UserRoutes(router)
 	GameRoutes(router)
 	OSRoutes(router)
+	PlayerRoutes(router)
+	UserRoutes(router)
 	return router
 }
 

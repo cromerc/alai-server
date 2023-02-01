@@ -45,7 +45,21 @@ func ListFrame(writer http.ResponseWriter, request *http.Request, params httprou
 		offset = int(math.Max(float64(0), float64(offset)))
 	}
 
-	result := gdb.Model(&models.Frame{}).Order("ID asc").Limit(limit).Offset(offset).Find(&frame)
+	filters := []string{
+		"game_id",
+		"coins",
+		"points",
+		"fps",
+		"elapsed_time",
+	}
+
+	whereClause, err := utils.GenerateWhereFilter(filters, queryParams)
+	if err != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	result := gdb.Model(&models.Frame{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&frame)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

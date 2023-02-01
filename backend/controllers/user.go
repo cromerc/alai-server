@@ -45,7 +45,20 @@ func ListUser(writer http.ResponseWriter, request *http.Request, params httprout
 		offset = int(math.Max(float64(0), float64(offset)))
 	}
 
-	result := gdb.Model(&models.User{}).Order("ID asc").Limit(limit).Offset(offset).Find(&users)
+	filters := []string{
+		"name",
+		"username",
+		"email",
+		"password",
+	}
+
+	whereClause, err := utils.GenerateWhereFilter(filters, queryParams)
+	if err != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	result := gdb.Model(&models.User{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&users)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

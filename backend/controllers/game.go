@@ -47,7 +47,29 @@ func ListGame(writer http.ResponseWriter, request *http.Request, params httprout
 		offset = int(math.Max(float64(0), float64(offset)))
 	}
 
-	result := gdb.Model(&models.Game{}).Order("ID asc").Limit(limit).Offset(offset).Find(&games)
+	filters := []string{
+		"player_id",
+		"level_id",
+		"os_id",
+		"godot_version_id",
+		"processor_count",
+		"screen_count",
+		"screen_dpi",
+		"screen_size",
+		"machine_id",
+		"locale",
+		"game_version",
+		"won",
+		"timestamp",
+	}
+
+	whereClause, err := utils.GenerateWhereFilter(filters, queryParams)
+	if err != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	result := gdb.Model(&models.Game{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&games)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

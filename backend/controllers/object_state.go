@@ -45,7 +45,17 @@ func ListObjectState(writer http.ResponseWriter, request *http.Request, params h
 		offset = int(math.Max(float64(0), float64(offset)))
 	}
 
-	result := gdb.Model(&models.ObjectState{}).Order("ID asc").Limit(limit).Offset(offset).Find(&objectState)
+	filters := []string{
+		"name",
+	}
+
+	whereClause, err := utils.GenerateWhereFilter(filters, queryParams)
+	if err != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	result := gdb.Model(&models.ObjectState{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&objectState)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

@@ -45,7 +45,17 @@ func ListOS(writer http.ResponseWriter, request *http.Request, params httprouter
 		offset = int(math.Max(float64(0), float64(offset)))
 	}
 
-	result := gdb.Model(&models.OS{}).Order("ID asc").Limit(limit).Offset(offset).Find(&os)
+	filters := []string{
+		"name",
+	}
+
+	whereClause, err := utils.GenerateWhereFilter(filters, queryParams)
+	if err != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	result := gdb.Model(&models.OS{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&os)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

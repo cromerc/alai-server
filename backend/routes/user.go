@@ -11,7 +11,7 @@ func UserRoutes(router *httprouter.Router) {
 	router.POST("/login", controllers.Login)
 	router.GET("/auth", middlewares.Authenticate(controllers.AuthenticateUser))
 
-	router.GET("/user", middlewares.Authenticate(controllers.ListUsers))
+	router.GET("/user", middlewares.Authenticate(controllers.ListUser))
 	router.GET("/user/:id", middlewares.Authenticate(controllers.GetUser))
 	router.POST("/user", middlewares.Authenticate(controllers.CreateUser))
 	router.PATCH("/user/:id", middlewares.Authenticate(controllers.UpdateUser))

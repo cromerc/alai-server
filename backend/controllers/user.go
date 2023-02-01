@@ -65,7 +65,7 @@ func AuthenticateUser(writer http.ResponseWriter, request *http.Request, params 
 	writer.WriteHeader(http.StatusNoContent)
 }
 
-func ListUsers(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func ListUser(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	gdb := database.Connect()
 	defer database.Close(gdb)
 

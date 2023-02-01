@@ -13,6 +13,45 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+func ListGame(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+	gdb := database.Connect()
+	defer database.Close(gdb)
+
+	var games []models.Game
+
+	result := gdb.Model(&models.Game{}).Order("ID asc").Find(&games)
+	if result.Error != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
+		return
+	} else {
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
+		json.NewEncoder(writer).Encode(games)
+		return
+	}
+}
+
+func GetGame(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+	gdb := database.Connect()
+	defer database.Close(gdb)
+
+	var game models.Game
+
+	result := gdb.Model(&models.Game{}).Order("ID asc").Find(&game, params.ByName("id"))
+	if result.Error != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
+		return
+	} else if result.RowsAffected == 0 {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	} else {
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
+		json.NewEncoder(writer).Encode(game)
+		return
+	}
+}
+
 func CreateGame(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	gdb := database.Connect()
 	defer database.Close(gdb)
@@ -48,45 +87,6 @@ func CreateGame(writer http.ResponseWriter, request *http.Request, params httpro
 		return
 	} else {
 		writer.WriteHeader(http.StatusOK)
-		return
-	}
-}
-
-func ListGames(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	gdb := database.Connect()
-	defer database.Close(gdb)
-
-	var games []models.Game
-
-	result := gdb.Model(&models.Game{}).Order("ID asc").Find(&games)
-	if result.Error != nil {
-		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
-		return
-	} else {
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(games)
-		return
-	}
-}
-
-func GetGame(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	gdb := database.Connect()
-	defer database.Close(gdb)
-
-	var game models.Game
-
-	result := gdb.Model(&models.Game{}).Order("ID asc").Find(&game, params.ByName("id"))
-	if result.Error != nil {
-		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
-		return
-	} else if result.RowsAffected == 0 {
-		writer.WriteHeader(http.StatusNotFound)
-		return
-	} else {
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(game)
 		return
 	}
 }

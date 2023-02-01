@@ -8,7 +8,7 @@ import (
 )
 
 func GameRoutes(router *httprouter.Router) {
-	router.GET("/game", middlewares.Authenticate(controllers.ListGames))
+	router.GET("/game", middlewares.Authenticate(controllers.ListGame))
 	router.GET("/game/:id", middlewares.Authenticate(controllers.GetGame))
 	router.POST("/game", controllers.CreateGame)
 }

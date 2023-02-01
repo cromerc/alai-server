@@ -8,9 +8,9 @@ import (
 )
 
 func PlayerRoutes(router *httprouter.Router) {
-	router.GET("/os", controllers.ListPlayer)
-	router.GET("/os/:id", controllers.GetPlayer)
-	router.POST("/os", middlewares.Authenticate(controllers.CreatePlayer))
-	router.PATCH("/os/:id", middlewares.Authenticate(controllers.UpdatePlayer))
-	router.DELETE("/os/:id", middlewares.Authenticate(controllers.DeletePlayer))
+	router.GET("/player", controllers.ListPlayer)
+	router.GET("/player/:id", controllers.GetPlayer)
+	router.POST("/player", middlewares.Authenticate(controllers.CreatePlayer))
+	router.PATCH("/player/:id", middlewares.Authenticate(controllers.UpdatePlayer))
+	router.DELETE("/player/:id", middlewares.Authenticate(controllers.DeletePlayer))
 }

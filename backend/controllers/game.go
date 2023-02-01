@@ -11,7 +11,6 @@ import (
 	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/utils"
 
 	"github.com/julienschmidt/httprouter"
-	"gorm.io/gorm"
 )
 
 func CreateGame(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -43,7 +42,7 @@ func CreateGame(writer http.ResponseWriter, request *http.Request, params httpro
 		return
 	}
 
-	result := createGame(game, gdb)
+	result := gdb.Create(&game)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
@@ -53,17 +52,13 @@ func CreateGame(writer http.ResponseWriter, request *http.Request, params httpro
 	}
 }
 
-func createGame(game models.Game, gdb *gorm.DB) *gorm.DB {
-	return gdb.Create(&game)
-}
-
 func ListGames(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
 	var games []models.Game
 
-	result := listGames(&games, gdb)
+	result := gdb.Model(&models.Game{}).Order("ID asc").Joins("Player").Joins("Level").Joins("OS").Joins("GodotVersion").Find(&games)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
@@ -75,17 +70,13 @@ func ListGames(writer http.ResponseWriter, request *http.Request, params httprou
 	}
 }
 
-func listGames(games *[]models.Game, gdb *gorm.DB) *gorm.DB {
-	return gdb.Model(&models.Game{}).Order("ID asc").Joins("Player").Joins("Level").Joins("OS").Joins("GodotVersion").Find(&games)
-}
-
 func GetGame(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
 	var game models.Game
 
-	result := getGame(&game, params.ByName("id"), gdb)
+	result := gdb.Model(&models.Game{}).Order("ID asc").Joins("Player").Joins("Level").Joins("OS").Find(&game, params.ByName("id"))
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
@@ -98,8 +89,4 @@ func GetGame(writer http.ResponseWriter, request *http.Request, params httproute
 		json.NewEncoder(writer).Encode(game)
 		return
 	}
-}
-
-func getGame(games *models.Game, id string, gdb *gorm.DB) *gorm.DB {
-	return gdb.Model(&models.Game{}).Order("ID asc").Joins("Player").Joins("Level").Joins("OS").Find(&games, id)
 }

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -18,7 +19,33 @@ func ListFrame(writer http.ResponseWriter, request *http.Request, params httprou
 
 	var frame []models.Frame
 
-	result := gdb.Model(&models.Frame{}).Order("ID asc").Find(&frame)
+	queryParams := request.URL.Query()
+
+	limit := 50
+	if queryParams.Get("limit") != "" {
+		var err error
+		limit, err = strconv.Atoi(queryParams.Get("limit"))
+		if err != nil {
+			utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+			return
+		}
+		limit = int(math.Min(float64(500), float64(limit)))
+		limit = int(math.Max(float64(1), float64(limit)))
+	}
+
+	offset := 0
+	if queryParams.Get("offset") != "" {
+		var err error
+		offset, err = strconv.Atoi(queryParams.Get("offset"))
+		if err != nil {
+			utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+			return
+		}
+		offset = int(math.Min(float64(9223372036854775807), float64(offset)))
+		offset = int(math.Max(float64(0), float64(offset)))
+	}
+
+	result := gdb.Model(&models.Frame{}).Order("ID asc").Limit(limit).Offset(offset).Find(&frame)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

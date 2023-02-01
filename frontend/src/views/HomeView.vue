@@ -1,9 +1,18 @@
 <script setup>
-    import TheWelcome from '../components/TheWelcome.vue';
+import auth from '../utils/Auth';
+import { onMounted } from 'vue';
+
+onMounted(() => {
+    checkAuth();
+})
+
+const checkAuth = () => {
+    auth.checkToken(true);
+};
 </script>
 
 <template>
     <main>
-        <TheWelcome />
+
     </main>
 </template>

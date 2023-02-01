@@ -45,7 +45,19 @@ func ListPlayer(writer http.ResponseWriter, request *http.Request, params httpro
 		offset = int(math.Max(float64(0), float64(offset)))
 	}
 
-	result := gdb.Model(&models.Player{}).Order("ID asc").Limit(limit).Offset(offset).Find(&player)
+	filters := []string{
+		"rut",
+		"name",
+		"email",
+	}
+
+	whereClause, err := utils.GenerateWhereFilter(filters, queryParams)
+	if err != nil {
+		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	result := gdb.Model(&models.Player{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&player)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

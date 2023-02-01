@@ -9,7 +9,6 @@ const model = ref([
         items: [
             { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/home' },
             { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', to: '/charts' }]
-
     }
 ]);
 </script>

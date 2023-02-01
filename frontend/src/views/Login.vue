@@ -1,8 +1,30 @@
 <script setup>
 import { ref } from 'vue';
-
+import axios from 'axios';
 const username = ref('');
 const password = ref('');
+
+
+async function onLoginClick() {
+    var login =
+    {
+        username: username.value,
+        password: password.value
+    };
+    try {
+        const response = await axios.post(`http://localhost:3001/login`, login);
+        console.log(response);
+        if (response.status === 200) {
+            localStorage.setItem('token', response.data.token);
+        }
+    }
+    catch (error) {
+        console.error(error);
+    }
+
+}
+
+
 
 </script>
 
@@ -27,7 +49,9 @@ const password = ref('');
                         <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true"
                             class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem" :feedback="false">
                         </Password>
-                        <Button label="Log In" class="w-full p-3 text-xl"></Button>
+                        <router-link to="/home">
+                            <Button label="Log In" class="w-full p-3 text-xl" @click="onLoginClick()"></Button>
+                        </router-link>
                     </div>
                 </div>
             </div>

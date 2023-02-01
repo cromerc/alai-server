@@ -1,6 +1,7 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
+import auth from '../../utils/Auth';
 
 const { layoutConfig } = useLayout();
 let documentStyle = getComputedStyle(document.documentElement);
@@ -10,7 +11,6 @@ let surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
 const lineData = ref(null);
 const lineOptions = ref(null);
-
 
 const setColorOptions = () => {
     documentStyle = getComputedStyle(document.documentElement);
@@ -80,6 +80,13 @@ watch(
     { immediate: true }
 );
 
+onMounted(() => {
+    checkAuth();
+})
+
+const checkAuth = () => {
+    auth.checkToken(true);
+};
 </script>
 
 <template>

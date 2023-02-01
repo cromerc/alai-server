@@ -1,8 +1,4 @@
 <script setup>
-import { useLayout } from '@/layout/composables/layout';
-import { computed } from 'vue';
-
-const { layoutConfig, contextPath } = useLayout();
 
 const smoothScroll = (id) => {
     document.querySelector(id).scrollIntoView({
@@ -10,9 +6,6 @@ const smoothScroll = (id) => {
     });
 };
 
-const logoUrl = computed(() => {
-    return `${contextPath}layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
-});
 </script>
 
 <template>
@@ -30,11 +23,10 @@ const logoUrl = computed(() => {
                     <ul
                         class="list-none p-0 m-0 flex lg:align-items-center select-none flex-column lg:flex-row cursor-pointer">
                         <li>
-                            <a @click="smoothScroll('#hero')"
-                                class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple
-                                href="home">
+                            <router-link to="/home"
+                                class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple>
                                 <span>Home</span>
-                            </a>
+                            </router-link>
                         </li>
                         <li>
                             <a @click="smoothScroll('#features')"
@@ -58,11 +50,11 @@ const logoUrl = computed(() => {
                     </ul>
                     <div
                         class="flex justify-content-between lg:block border-top-1 lg:border-top-none surface-border py-3 lg:py-0 mt-3 lg:mt-0">
-                        <a href="/login">
+                        <router-link to="/login">
                             <Button label="Login"
                                 class="p-button-text p-button-rounded border-none font-light text-white line-height-2 bg-blue-500">
                             </Button>
-                        </a>
+                        </router-link>
                     </div>
 
                 </div>
@@ -105,8 +97,8 @@ const logoUrl = computed(() => {
                         <h2 class="line-height-1 text-900 text-4xl font-normal">Alai</h2>
                         <span class="text-700 text-2xl line-height-3 ml-0 md:ml-2" style="max-width: 650px">Alai is a
                             2D-based platform videogame made with a friendly and easy-to-use game engine called
-                            "Godot". Alai contains within the game a player registration menu and recollection of data
-                            for each playthrough so the data can be analyzed for future use</span>
+                            "Godot". Alai contains within the game a data harvest trait
+                            for each playthrough, with the purpose to analyze the information for future use</span>
                     </div>
                 </div>
 
@@ -119,7 +111,7 @@ const logoUrl = computed(() => {
                         <h2 class="line-height-1 text-900 text-4xl font-normal">Obelisk</h2>
                         <span class="text-700 text-2xl line-height-3 mr-0 md:mr-2" style="max-width: 650px">A compiled
                             and declarative self-made language with the purpose of the creation of an Artifitial
-                            Intelligence, inspired on the logical language "Prolog"</span>
+                            Intelligence, inspired by the logical language "Prolog"</span>
                     </div>
 
                     <div class="flex justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6 bg-yellow-100 p-0"

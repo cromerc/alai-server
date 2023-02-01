@@ -58,7 +58,7 @@ func ListGames(writer http.ResponseWriter, request *http.Request, params httprou
 
 	var games []models.Game
 
-	result := gdb.Model(&models.Game{}).Order("ID asc").Joins("Player").Joins("Level").Joins("OS").Joins("GodotVersion").Find(&games)
+	result := gdb.Model(&models.Game{}).Order("ID asc").Find(&games)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
@@ -76,7 +76,7 @@ func GetGame(writer http.ResponseWriter, request *http.Request, params httproute
 
 	var game models.Game
 
-	result := gdb.Model(&models.Game{}).Order("ID asc").Joins("Player").Joins("Level").Joins("OS").Find(&game, params.ByName("id"))
+	result := gdb.Model(&models.Game{}).Order("ID asc").Find(&game, params.ByName("id"))
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

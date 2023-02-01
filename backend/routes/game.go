@@ -2,13 +2,14 @@ package routes
 
 import (
 	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/controllers"
-	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/middlewares"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 func GameRoutes(router *httprouter.Router) {
-	router.GET("/game", middlewares.Authenticate(controllers.ListGame))
-	router.GET("/game/:id", middlewares.Authenticate(controllers.GetGame))
+	router.GET("/game", controllers.ListGame)
+	router.GET("/game/:id", controllers.GetGame)
 	router.POST("/game", controllers.CreateGame)
+	router.PATCH("/game/:id", controllers.UpdateGame)
+	router.DELETE("/game/:id", controllers.DeleteGame)
 }

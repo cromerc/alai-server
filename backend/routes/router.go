@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/middlewares"
 	"github.com/gorilla/handlers"
 	"github.com/julienschmidt/httprouter"
 )
@@ -26,6 +27,7 @@ func Initialize() *httprouter.Router {
 func Serve(router *httprouter.Router) {
 	newRouter := handlers.CombinedLoggingHandler(os.Stdout, router)
 	newRouter = handlers.CompressHandler(newRouter)
+	newRouter = middlewares.Cors(newRouter)
 
 	idleConnsClosed := make(chan struct{})
 

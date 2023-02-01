@@ -22,6 +22,7 @@ func Initialize() *httprouter.Router {
 	GodotVersionRoutes(router)
 	LevelRoutes(router)
 	ObjectNameRoutes(router)
+	ObjectStateRoutes(router)
 	OSRoutes(router)
 	PlayerRoutes(router)
 	UserRoutes(router)

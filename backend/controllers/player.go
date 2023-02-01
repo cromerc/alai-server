@@ -16,16 +16,16 @@ func ListPlayer(writer http.ResponseWriter, request *http.Request, params httpro
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var os []models.Player
+	var player []models.Player
 
-	result := gdb.Model(&models.Player{}).Order("ID asc").Find(&os)
+	result := gdb.Model(&models.Player{}).Order("ID asc").Find(&player)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(os)
+		json.NewEncoder(writer).Encode(player)
 	}
 }
 
@@ -33,9 +33,9 @@ func GetPlayer(writer http.ResponseWriter, request *http.Request, params httprou
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var os models.Player
+	var player models.Player
 
-	result := gdb.Model(&models.Player{}).Find(&os, params.ByName("id"))
+	result := gdb.Model(&models.Player{}).Find(&player, params.ByName("id"))
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
@@ -45,7 +45,7 @@ func GetPlayer(writer http.ResponseWriter, request *http.Request, params httprou
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(os)
+		json.NewEncoder(writer).Encode(player)
 	}
 }
 
@@ -53,17 +53,17 @@ func CreatePlayer(writer http.ResponseWriter, request *http.Request, params http
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var os models.Player
+	var player models.Player
 
 	decoder := json.NewDecoder(request.Body)
 
-	err := decoder.Decode(&os)
+	err := decoder.Decode(&player)
 	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	result := gdb.Create(&os)
+	result := gdb.Create(&player)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
@@ -76,23 +76,23 @@ func UpdatePlayer(writer http.ResponseWriter, request *http.Request, params http
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var os models.Player
+	var player models.Player
 
 	decoder := json.NewDecoder(request.Body)
 
-	err := decoder.Decode(&os)
+	err := decoder.Decode(&player)
 	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	os.ID, err = strconv.ParseUint(params.ByName("id"), 10, 64)
+	player.ID, err = strconv.ParseUint(params.ByName("id"), 10, 64)
 	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	result := gdb.Updates(&os)
+	result := gdb.Updates(&player)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
@@ -108,15 +108,15 @@ func DeletePlayer(writer http.ResponseWriter, request *http.Request, params http
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var os models.Player
+	var player models.Player
 	var err error
-	os.ID, err = strconv.ParseUint(params.ByName("id"), 10, 64)
+	player.ID, err = strconv.ParseUint(params.ByName("id"), 10, 64)
 	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	result := gdb.Delete(&os)
+	result := gdb.Delete(&player)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

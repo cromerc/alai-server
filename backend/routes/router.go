@@ -17,6 +17,7 @@ import (
 func Initialize() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/", index)
+	FrameRoutes(router)
 	GameRoutes(router)
 	LevelRoutes(router)
 	OSRoutes(router)

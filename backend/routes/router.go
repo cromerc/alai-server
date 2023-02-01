@@ -23,6 +23,7 @@ func Initialize() *httprouter.Router {
 	LevelRoutes(router)
 	ObjectNameRoutes(router)
 	ObjectStateRoutes(router)
+	ObjectRoutes(router)
 	OSRoutes(router)
 	PlayerRoutes(router)
 	UserRoutes(router)

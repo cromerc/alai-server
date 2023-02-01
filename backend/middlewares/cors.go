@@ -13,5 +13,7 @@ func Cors(handler http.Handler) http.Handler {
 			writer.Header().Set("Access-Control-Allow-Origin", origin)
 			writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		}
+
+		handler.ServeHTTP(writer, request)
 	})
 }

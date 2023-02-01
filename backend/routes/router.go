@@ -18,6 +18,7 @@ func Initialize() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/", index)
 	GameRoutes(router)
+	LevelRoutes(router)
 	OSRoutes(router)
 	PlayerRoutes(router)
 	UserRoutes(router)

@@ -3,7 +3,8 @@ import AppLayout from '@/layout/AppLayout.vue';
 import HomeView from '../views/HomeView.vue';
 import Landing from '../views/Landing.vue';
 import Login from '../views/Login.vue';
-import Chart from '@/views/menu/Chart.vue';
+import Chart from '@/views/Chart.vue';
+import Crud from '@/views/Crud.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,7 +30,14 @@ const router = createRouter({
                     path: '/charts',
                     name: 'charts',
                     component: Chart
-                }/* ,
+                },
+                {
+                    path: '/crud',
+                    name: 'crud',
+                    component: Crud
+                }
+
+                /* ,
                 {
                     path: '/about',
                     name: 'about',

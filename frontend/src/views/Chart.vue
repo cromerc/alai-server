@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
-import auth from '../../utils/Auth';
+import auth from '../utils/Auth';
 
 const { layoutConfig } = useLayout();
 let documentStyle = getComputedStyle(document.documentElement);

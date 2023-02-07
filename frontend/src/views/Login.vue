@@ -1,9 +1,10 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 const username = ref('');
 const password = ref('');
-
+const router = useRouter();
 
 async function onLoginClick() {
     var login =
@@ -13,18 +14,15 @@ async function onLoginClick() {
     };
     try {
         const response = await axios.post(`http://localhost:3001/login`, login);
-        console.log(response);
         if (response.status === 200) {
             localStorage.setItem('token', response.data.token);
+            router.push('/home');
         }
     }
     catch (error) {
         console.error(error);
     }
-
 }
-
-
 
 </script>
 
@@ -49,9 +47,9 @@ async function onLoginClick() {
                         <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true"
                             class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem" :feedback="false">
                         </Password>
-                        <router-link to="/home">
-                            <Button label="Log In" class="w-full p-3 text-xl" @click="onLoginClick()"></Button>
-                        </router-link>
+
+                        <Button label="Log In" class="w-full p-3 text-xl" @click="onLoginClick()"></Button>
+
                     </div>
                 </div>
             </div>

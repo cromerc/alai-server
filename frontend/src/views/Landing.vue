@@ -66,13 +66,8 @@ const smoothScroll = (id) => {
                     <h1 class="text-6xl font-bold text-gray-900 line-height-2"><span class="font-light block">A.I.
                             Development</span>Alai &
                         Obelisk</h1>
-                    <p class="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">Artificial Intelligence
+                    <p class="font-normal text-2xl line-height-3 md:mt-3 text-gray-700 mb-8">Artificial Intelligence
                         implementation in a 2D-based platform videogame using a self-made declarative language</p>
-                    <Button label="Get Started"
-                        class="p-button-rounded text-xl border-none mt-5 bg-blue-500 font-normal text-white line-height-3 px-3"></Button>
-                </div>
-                <div class="flex justify-content-center md:justify-content-end">
-                    <img src="/demo/images/landing/screen-1.png" alt="Hero Image" class="w-9 md:w-auto" />
                 </div>
             </div>
 
@@ -84,9 +79,9 @@ const smoothScroll = (id) => {
                 </div>
 
                 <div class="grid mt-8 pb-2 md:pb-8">
-                    <div class="flex justify-content-center col-12 lg:col-6 bg-purple-100 p-0 flex-order-1 lg:flex-order-0"
+                    <div class="flex justify-content-center col-12 lg:col-6  p-0 flex-order-1 lg:flex-order-0"
                         style="border-radius: 8px">
-                        <img src="/demo/images/landing/mockup.svg" class="w-11" alt="mockup mobile" />
+                        <img src="public/images/alai.png" class="w-11" alt="alai screenshot" />
                     </div>
 
                     <div class="col-12 lg:col-6 my-auto flex flex-column lg:align-items-end text-center lg:text-right">
@@ -114,9 +109,9 @@ const smoothScroll = (id) => {
                             Intelligence, inspired by the logical language "Prolog"</span>
                     </div>
 
-                    <div class="flex justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6 bg-yellow-100 p-0"
+                    <div class="flex align-items-center justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6  p-0"
                         style="border-radius: 8px">
-                        <img src="/demo/images/landing/mockup-desktop.svg" class="w-11" alt="mockup" />
+                        <img src="public/images/obelisk.jpg" class="flex w-11" alt="obelisk" width="100" height="100" />
                     </div>
                 </div>
             </div>

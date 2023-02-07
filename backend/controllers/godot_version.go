@@ -142,7 +142,7 @@ func DeleteGodotVersion(writer http.ResponseWriter, request *http.Request, param
 		return
 	}
 
-	result := gdb.Delete(&godotVersion)
+	result := gdb.Unscoped().Delete(&godotVersion)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

@@ -140,7 +140,7 @@ func DeleteObject(writer http.ResponseWriter, request *http.Request, params http
 		return
 	}
 
-	result := gdb.Delete(&object)
+	result := gdb.Unscoped().Delete(&object)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

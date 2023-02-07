@@ -134,7 +134,7 @@ func DeleteObjectState(writer http.ResponseWriter, request *http.Request, params
 		return
 	}
 
-	result := gdb.Delete(&objectState)
+	result := gdb.Unscoped().Delete(&objectState)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

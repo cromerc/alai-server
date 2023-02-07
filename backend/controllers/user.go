@@ -142,7 +142,7 @@ func DeleteUser(writer http.ResponseWriter, request *http.Request, params httpro
 	var user models.User
 	user.ID, _ = strconv.ParseUint(params.ByName("id"), 10, 64)
 
-	result := gdb.Delete(&user)
+	result := gdb.Unscoped().Delete(&user)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

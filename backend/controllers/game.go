@@ -166,7 +166,7 @@ func DeleteGame(writer http.ResponseWriter, request *http.Request, params httpro
 		return
 	}
 
-	result := gdb.Delete(&game)
+	result := gdb.Unscoped().Delete(&game)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

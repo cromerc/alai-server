@@ -134,7 +134,7 @@ func DeleteLevel(writer http.ResponseWriter, request *http.Request, params httpr
 		return
 	}
 
-	result := gdb.Delete(&level)
+	result := gdb.Unscoped().Delete(&level)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

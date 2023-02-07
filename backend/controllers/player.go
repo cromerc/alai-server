@@ -136,7 +136,7 @@ func DeletePlayer(writer http.ResponseWriter, request *http.Request, params http
 		return
 	}
 
-	result := gdb.Delete(&player)
+	result := gdb.Unscoped().Delete(&player)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

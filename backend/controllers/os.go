@@ -134,7 +134,7 @@ func DeleteOS(writer http.ResponseWriter, request *http.Request, params httprout
 		return
 	}
 
-	result := gdb.Delete(&os)
+	result := gdb.Unscoped().Delete(&os)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

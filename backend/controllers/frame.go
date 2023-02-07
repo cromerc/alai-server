@@ -138,7 +138,7 @@ func DeleteFrame(writer http.ResponseWriter, request *http.Request, params httpr
 		return
 	}
 
-	result := gdb.Delete(&frame)
+	result := gdb.Unscoped().Delete(&frame)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return

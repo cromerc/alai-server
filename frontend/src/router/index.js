@@ -4,7 +4,8 @@ import HomeView from '../views/HomeView.vue';
 import Landing from '../views/Landing.vue';
 import Login from '../views/Login.vue';
 import Chart from '@/views/Chart.vue';
-import Crud from '@/views/Crud.vue';
+import OsCrud from '@/views/OsCrud.vue';
+import UserCrud from '@/views/UserCrud.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,9 +33,14 @@ const router = createRouter({
                     component: Chart
                 },
                 {
-                    path: '/crud',
-                    name: 'crud',
-                    component: Crud
+                    path: '/os',
+                    name: 'OS',
+                    component: OsCrud
+                },
+                {
+                    path: '/user',
+                    name: 'User',
+                    component: UserCrud
                 }
 
                 /* ,

@@ -8,6 +8,7 @@ import auth from '../utils/Auth';
 const toast = useToast();
 const products = ref(null);
 const productDialog = ref(false);
+const productDialogChange = ref(false);
 const deleteProductDialog = ref(false);
 const deleteProductsDialog = ref(false);
 const os = ref({});
@@ -70,11 +71,36 @@ const hideDialog = () => {
     submitted.value = false;
 };
 
+const hideDialogChange = () => {
+    productDialogChange.value = false;
+    submitted.value = false;
+};
+
 const editProduct = (editProduct) => {
     os.value = { ...editProduct };
-    console.log(os);
-    productDialog.value = true;
+    console.log(os.value.ID);
+    productDialogChange.value = true;
 };
+async function onChangeOS() {
+    var changeOS =
+    {
+        name: os.value.name
+    };
+    try {
+        const response = await axios.patch(`http://localhost:3001/os/` + os.value.ID, changeOS, auth.getTokenHeader());
+
+        if (response.status === 204) {
+            toast.add({ severity: 'success', summary: 'Successful', detail: 'OS Modified', life: 3000 });
+            productDialogChange.value = false;
+        }
+        else {
+            console.error(response);
+        }
+    }
+    catch (error) {
+        console.error(error);
+    }
+}
 
 const confirmDeleteProduct = (editProduct) => {
     os.value = editProduct;
@@ -101,7 +127,7 @@ async function deleteProduct() {
 const confirmDeleteSelected = () => {
     deleteProductsDialog.value = true;
 };
-async function deleteSelectedProducts() {
+const deleteSelectedProducts = () => {
     selectedProducts.value.forEach(element => {
         try {
             const response = axios.delete(`http://localhost:3001/os/` + element.ID, auth.getTokenHeader());
@@ -181,8 +207,8 @@ const initFilters = () => {
                     </Column>
                 </DataTable>
 
-                <Dialog v-model:visible="productDialog" :style="{ width: '450px' }" header="Operating System"
-                    :modal="true" class="p-fluid">
+                <Dialog v-model:visible="productDialog" :style="{ width: '450px' }" header="New OS" :modal="true"
+                    class="p-fluid">
                     <div class="field">
                         <label for="name">Name</label>
                         <InputText id="name" v-model.trim="os.name" required="true" autofocus
@@ -192,6 +218,19 @@ const initFilters = () => {
                     <template #footer>
                         <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
                         <Button label="Save" icon="pi pi-check" class="p-button-text" @click="onCreateClick" />
+                    </template>
+                </Dialog>
+                <Dialog v-model:visible="productDialogChange" :style="{ width: '450px' }" header="New OS" :modal="true"
+                    class="p-fluid">
+                    <div class="field">
+                        <label for="name">Name</label>
+                        <InputText id="name" v-model.trim="os.name" required="true" autofocus
+                            :class="{ 'p-invalid': submitted && !os.name }" />
+                        <small class="p-invalid" v-if="submitted && !os.name">Name is required.</small>
+                    </div>
+                    <template #footer>
+                        <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialogChange" />
+                        <Button label="Save" icon="pi pi-check" class="p-button-text" @click="onChangeOS" />
                     </template>
                 </Dialog>
 

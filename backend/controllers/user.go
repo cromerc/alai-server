@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 
 	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/database"
+	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/middlewares"
 	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/models"
 	"git.cromer.cl/Proyecto-Titulo/alai-server/backend/utils"
 
@@ -103,6 +105,9 @@ func UpdateUser(writer http.ResponseWriter, request *http.Request, params httpro
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
+	claims := request.Context().Value(middlewares.JWTContextKey).(*utils.JWTClaim)
+	username := claims.Username
+
 	var user models.User
 
 	decoder := json.NewDecoder(request.Body)
@@ -119,8 +124,33 @@ func UpdateUser(writer http.ResponseWriter, request *http.Request, params httpro
 		return
 	}
 
-	if user.Password != "" {
-		user.HashPassword(user.Password)
+	if user.NewPassword != "" {
+		var tmpUser models.User
+
+		result := gdb.Find(&tmpUser).Where(&models.User{Username: username})
+		if result.Error != nil {
+			utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
+			return
+		} else if result.RowsAffected == 0 {
+			writer.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		// If the logged in user and the modified user are no the same, password can't be changed
+		if tmpUser.ID != user.ID {
+			utils.JSONErrorOutput(writer, http.StatusBadRequest, errors.New("only the same user may change password").Error())
+			return
+		}
+
+		err = tmpUser.CheckPassword(user.Password)
+		if err != nil {
+			utils.JSONErrorOutput(writer, http.StatusBadRequest, errors.New("incorrect user or password").Error())
+			return
+		}
+
+		user.HashPassword(user.NewPassword)
+	} else {
+		user.Password = ""
 	}
 
 	result := gdb.Updates(&user)

@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"strings"
@@ -9,6 +10,10 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 )
+
+type contextKey string
+
+const JWTContextKey contextKey = "JWTClaims"
 
 func Authenticate(handle httprouter.Handle) httprouter.Handle {
 	return func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -20,11 +25,15 @@ func Authenticate(handle httprouter.Handle) httprouter.Handle {
 		}
 		tokenString := splitToken[1]
 
-		err := utils.ValidateToken(tokenString)
+		claims, err := utils.ValidateToken(tokenString)
 		if err != nil {
 			utils.JSONErrorOutput(writer, http.StatusUnauthorized, err.Error())
 			return
 		}
+
+		ctx := request.Context()
+		ctx = context.WithValue(ctx, JWTContextKey, claims)
+		request = request.WithContext(ctx)
 
 		handle(writer, request, params)
 	}

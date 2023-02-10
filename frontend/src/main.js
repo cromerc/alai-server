@@ -21,6 +21,7 @@ import Textarea from 'primevue/textarea';
 import RadioButton from 'primevue/radiobutton';
 import InputNumber from 'primevue/inputnumber';
 import Dialog from 'primevue/dialog';
+import Menu from 'primevue/menu';
 
 import '@/assets/styles.scss';
 
@@ -49,6 +50,7 @@ app.component('Textarea', Textarea);
 app.component('RadioButton', RadioButton);
 app.component('InputNumber', InputNumber);
 app.component('Dialog', Dialog);
+app.component('Menu', Menu);
 
 
 app.mount('#app');

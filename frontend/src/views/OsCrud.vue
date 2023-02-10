@@ -32,6 +32,10 @@ async function onShowClick() {
 }
 
 async function onCreateClick() {
+    submitted.value = true;
+    if (os.value.name === "") {
+        throw new Error("name empty");
+    }
     var newOS =
     {
         name: os.value.name

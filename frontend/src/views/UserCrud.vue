@@ -32,6 +32,16 @@ async function onShowClick() {
 }
 
 async function onCreateClick() {
+    submitted.value = true;
+    if (user.value.name === "") {
+        throw new Error("name empty");
+    }
+    else if (user.value.username === "") {
+        throw new Error("username empty");
+    }
+    else if (user.value.email === "") {
+        throw new Error("email empty");
+    }
     var newUser =
     {
         name: user.value.name,

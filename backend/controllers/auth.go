@@ -45,7 +45,7 @@ func Login(writer http.ResponseWriter, request *http.Request, params httprouter.
 		Token string `json:"token"`
 	}
 
-	tokenString, err := utils.GenerateJWT(user.Email, user.Username)
+	tokenString, err := utils.GenerateJWT(user.ID, user.Email, user.Username)
 	if err != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, err.Error())
 		return

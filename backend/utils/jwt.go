@@ -9,14 +9,16 @@ import (
 )
 
 type JWTClaim struct {
+	Id       uint64 `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	jwt.RegisteredClaims
 }
 
-func GenerateJWT(email string, username string) (tokenString string, err error) {
+func GenerateJWT(id uint64, email string, username string) (tokenString string, err error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &JWTClaim{
+		Id:       id,
 		Email:    email,
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{

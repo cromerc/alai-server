@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
+import axios from 'axios';
 
 const { onMenuToggle } = useLayout();
 
@@ -47,8 +48,25 @@ onBeforeUnmount(() => {
     unbindOutsideClickListener();
 });
 
-const onClickPasswordChange = () => {
+
+async function onClickPasswordChange() {
     submitted.value = true;
+    console.log(user.value);
+    var pass =
+
+    {
+        password: user.value.current_password,
+        new_password: user.value.new_password
+    };
+    /* try {
+        const response = await axios.patch(`http://localhost:3001/user/` + user.value.ID, auth.getTokenHeader());
+        if (response.status !== 204) {
+            console.error(response);
+        }
+    }
+    catch (error) {
+        console.error(error);
+    } */
 }
 
 

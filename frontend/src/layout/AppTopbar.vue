@@ -4,6 +4,7 @@ import { useLayout } from '@/layout/composables/layout';
 import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
 const { onMenuToggle } = useLayout();
 
@@ -58,15 +59,17 @@ async function onClickPasswordChange() {
         password: user.value.current_password,
         new_password: user.value.new_password
     };
-    /* try {
-        const response = await axios.patch(`http://localhost:3001/user/` + user.value.ID, auth.getTokenHeader());
+    var token = localStorage.getItem("token");
+    var decoded = jwt_decode(token);
+    try {
+        const response = await axios.patch(`http://localhost:3001/user/` + decoded.id, auth.getTokenHeader());
         if (response.status !== 204) {
             console.error(response);
         }
     }
     catch (error) {
         console.error(error);
-    } */
+    }
 }
 
 

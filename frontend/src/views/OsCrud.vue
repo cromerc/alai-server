@@ -90,6 +90,7 @@ async function onChangeOS() {
     {
         name: os.value.name
     };
+    console.log(os.value.ID);
     try {
         const response = await axios.patch(`http://localhost:3001/os/` + os.value.ID, changeOS, auth.getTokenHeader());
 

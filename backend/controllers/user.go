@@ -127,7 +127,7 @@ func UpdateUser(writer http.ResponseWriter, request *http.Request, params httpro
 	if user.NewPassword != "" {
 		var tmpUser models.User
 
-		result := gdb.Find(&tmpUser).Where(&models.User{Username: username})
+		result := gdb.Where(&models.User{Username: username}).Find(&tmpUser)
 		if result.Error != nil {
 			utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 			return

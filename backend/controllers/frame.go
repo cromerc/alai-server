@@ -16,7 +16,7 @@ func ListFrame(writer http.ResponseWriter, request *http.Request, params httprou
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var frame []models.Frame
+	var frames []models.Frame
 
 	queryParams := request.URL.Query()
 
@@ -40,14 +40,20 @@ func ListFrame(writer http.ResponseWriter, request *http.Request, params httprou
 		return
 	}
 
-	result := gdb.Model(&models.Frame{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&frame)
+	result := gdb.Model(&models.Frame{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&frames)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(frame)
+
+		var framesPublic []models.FramePublic
+		for _, frame := range frames {
+			framesPublic = append(framesPublic, models.FramePublic{Frame: frame})
+		}
+
+		json.NewEncoder(writer).Encode(framesPublic)
 	}
 }
 
@@ -67,7 +73,7 @@ func GetFrame(writer http.ResponseWriter, request *http.Request, params httprout
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(frame)
+		json.NewEncoder(writer).Encode(models.FramePublic{Frame: frame})
 	}
 }
 

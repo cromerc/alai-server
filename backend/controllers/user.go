@@ -46,12 +46,15 @@ func ListUser(writer http.ResponseWriter, request *http.Request, params httprout
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
-		for i := range users {
-			users[i].Password = ""
-		}
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(users)
+
+		var usersPublic []models.UserPublic
+		for _, user := range users {
+			usersPublic = append(usersPublic, models.UserPublic{User: user})
+		}
+
+		json.NewEncoder(writer).Encode(usersPublic)
 	}
 }
 
@@ -69,10 +72,9 @@ func GetUser(writer http.ResponseWriter, request *http.Request, params httproute
 		writer.WriteHeader(http.StatusNotFound)
 		return
 	} else {
-		user.Password = ""
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(user)
+		json.NewEncoder(writer).Encode(models.UserPublic{User: user})
 	}
 }
 

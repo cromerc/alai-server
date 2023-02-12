@@ -16,7 +16,7 @@ func ListPlayer(writer http.ResponseWriter, request *http.Request, params httpro
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var player []models.Player
+	var players []models.Player
 
 	queryParams := request.URL.Query()
 
@@ -38,14 +38,20 @@ func ListPlayer(writer http.ResponseWriter, request *http.Request, params httpro
 		return
 	}
 
-	result := gdb.Model(&models.Player{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&player)
+	result := gdb.Model(&models.Player{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&players)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(player)
+
+		var playersPublic []models.PlayerPublic
+		for _, player := range players {
+			playersPublic = append(playersPublic, models.PlayerPublic{Player: player})
+		}
+
+		json.NewEncoder(writer).Encode(playersPublic)
 	}
 }
 
@@ -65,7 +71,7 @@ func GetPlayer(writer http.ResponseWriter, request *http.Request, params httprou
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(player)
+		json.NewEncoder(writer).Encode(models.PlayerPublic{Player: player})
 	}
 }
 

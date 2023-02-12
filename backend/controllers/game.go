@@ -57,7 +57,13 @@ func ListGame(writer http.ResponseWriter, request *http.Request, params httprout
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(games)
+
+		var gamesPublic []models.GamePublic
+		for _, game := range games {
+			gamesPublic = append(gamesPublic, models.GamePublic{Game: game})
+		}
+
+		json.NewEncoder(writer).Encode(gamesPublic)
 		return
 	}
 }
@@ -78,7 +84,7 @@ func GetGame(writer http.ResponseWriter, request *http.Request, params httproute
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(game)
+		json.NewEncoder(writer).Encode(models.GamePublic{Game: game})
 		return
 	}
 }

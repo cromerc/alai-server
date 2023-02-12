@@ -9,25 +9,36 @@ import (
 
 type Game struct {
 	gorm.Model
-	ID             uint64       `json:"ID" gorm:"primaryKey"`
-	PlayerID       *uint64      `json:"player_id"`
+	ID             uint64       `json:"ID,omitempty" gorm:"primaryKey"`
+	PlayerID       *uint64      `json:"player_id,omitempty"`
 	Player         Player       `json:"player"`
-	LevelID        uint64       `json:"level_id" gorm:"not null"`
+	LevelID        uint64       `json:"level_id,omitempty" gorm:"not null"`
 	Level          Level        `json:"level" gorm:"not null"`
-	OSID           uint64       `json:"os_id" gorm:"not null"`
+	OSID           uint64       `json:"os_id,omitempty" gorm:"not null"`
 	OS             OS           `json:"os" gorm:"not null"`
-	GodotVersionID uint64       `json:"godot_version_id" gorm:"not null"`
+	GodotVersionID uint64       `json:"godot_version_id,omitempty" gorm:"not null"`
 	GodotVersion   GodotVersion `json:"godot_version" gorm:"not null"`
-	ProcessorCount uint64       `json:"processor_count" gorm:"not null"`
-	ScreenCount    uint8        `json:"screen_count" gorm:"not null"`
-	ScreenDPI      uint8        `json:"screen_dpi" gorm:"not null"`
-	ScreenSize     string       `json:"screen_size" gorm:"not null"`
-	MachineId      string       `json:"machine_id" gorm:"not null"`
-	Locale         string       `json:"locale" gorm:"not null"`
-	GameVersion    string       `json:"game_version" gorm:"not null"`
+	ProcessorCount uint64       `json:"processor_count,omitempty" gorm:"not null"`
+	ScreenCount    uint8        `json:"screen_count,omitempty" gorm:"not null"`
+	ScreenDPI      uint8        `json:"screen_dpi,omitempty" gorm:"not null"`
+	ScreenSize     string       `json:"screen_size,omitempty" gorm:"not null"`
+	MachineId      string       `json:"machine_id,omitempty" gorm:"not null"`
+	Locale         string       `json:"locale,omitempty" gorm:"not null"`
+	GameVersion    string       `json:"game_version,omitempty" gorm:"not null"`
 	Won            bool         `json:"won" gorm:"not null"`
-	Timestamp      uint64       `json:"timestamp" gorm:"not null"`
-	Frames         []Frame      `json:"frames"`
+	Timestamp      uint64       `json:"timestamp,omitempty" gorm:"not null"`
+	Frames         []Frame      `json:"frames,omitempty"`
+}
+
+type GamePublic struct {
+	Game
+	Player       bool `json:"player,omitempty"`
+	Level        bool `json:"level,omitempty"`
+	OS           bool `json:"os,omitempty"`
+	GodotVersion bool `json:"godot_version,omitempty"`
+	CreatedAt    bool `json:"CreatedAt,omitempty"`
+	UpdatedAt    bool `json:"UpdatedAt,omitempty"`
+	DeletedAt    bool `json:"DeletedAt,omitempty"`
 }
 
 func (game *Game) Validate() error {

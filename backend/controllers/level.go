@@ -16,7 +16,7 @@ func ListLevel(writer http.ResponseWriter, request *http.Request, params httprou
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var level []models.Level
+	var levels []models.Level
 
 	queryParams := request.URL.Query()
 
@@ -36,14 +36,20 @@ func ListLevel(writer http.ResponseWriter, request *http.Request, params httprou
 		return
 	}
 
-	result := gdb.Model(&models.Level{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&level)
+	result := gdb.Model(&models.Level{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&levels)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(level)
+
+		var levelsPublic []models.LevelPublic
+		for _, level := range levels {
+			levelsPublic = append(levelsPublic, models.LevelPublic{Level: level})
+		}
+
+		json.NewEncoder(writer).Encode(levelsPublic)
 	}
 }
 
@@ -63,7 +69,7 @@ func GetLevel(writer http.ResponseWriter, request *http.Request, params httprout
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(level)
+		json.NewEncoder(writer).Encode(models.LevelPublic{Level: level})
 	}
 }
 

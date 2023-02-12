@@ -16,7 +16,7 @@ func ListObjectState(writer http.ResponseWriter, request *http.Request, params h
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var objectState []models.ObjectState
+	var objectStates []models.ObjectState
 
 	queryParams := request.URL.Query()
 
@@ -36,14 +36,20 @@ func ListObjectState(writer http.ResponseWriter, request *http.Request, params h
 		return
 	}
 
-	result := gdb.Model(&models.ObjectState{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&objectState)
+	result := gdb.Model(&models.ObjectState{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&objectStates)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(objectState)
+
+		var objectStatesPublic []models.ObjectStatePublic
+		for _, objectstate := range objectStates {
+			objectStatesPublic = append(objectStatesPublic, models.ObjectStatePublic{ObjectState: objectstate})
+		}
+
+		json.NewEncoder(writer).Encode(objectStatesPublic)
 	}
 }
 
@@ -63,7 +69,7 @@ func GetObjectState(writer http.ResponseWriter, request *http.Request, params ht
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(objectState)
+		json.NewEncoder(writer).Encode(models.ObjectStatePublic{ObjectState: objectState})
 	}
 }
 

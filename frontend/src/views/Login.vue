@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 const username = ref('');
@@ -24,6 +24,12 @@ async function onLoginClick() {
     }
 }
 
+onMounted(() => {
+    if (localStorage.getItem("token") != null) {
+        router.push('/home');
+    }
+});
+
 </script>
 
 <template>
@@ -44,8 +50,8 @@ async function onLoginClick() {
                             style="padding: 1rem" v-model="username" />
 
                         <label for="password1" class="block text-900 font-medium text-xl mb-2">Password</label>
-                        <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true"
-                            class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem" :feedback="false">
+                        <Password id="password1" v-model="password" placeholder="Password" class="w-full mb-3"
+                            inputClass="w-full" inputStyle="padding:1rem" :feedback="false">
                         </Password>
 
                         <Button label="Log In" class="w-full p-3 text-xl" @click="onLoginClick()"></Button>

@@ -2,12 +2,16 @@
 import { ref, watch, onMounted } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 import auth from '../utils/Auth';
+import { useToast } from 'primevue/usetoast';
+import axios from 'axios';
 
 const { layoutConfig } = useLayout();
+const toast = useToast();
 let documentStyle = getComputedStyle(document.documentElement);
 let textColor = documentStyle.getPropertyValue('--text-color');
 let textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
 let surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+const time_elapsed = ref([]);
 
 const lineData = ref(null);
 const lineOptions = ref(null);
@@ -18,9 +22,22 @@ const setColorOptions = () => {
     textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
     surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 };
-const setChart = () => {
+async function setChart() {
+    try {
+        const response = await axios.get(`http://localhost:3001/frame?limit=5000&game_id=4`);
+        //console.log(response.data);
+        time_elapsed.value = response.data;
+        time_elapsed.value = time_elapsed.value.filter(x => x = 1);
+        console.log(time_elapsed.value);
+    }
+    catch (error) {
+        console.error(error);
+    }
+
+
+    /////////////////////////////////
     lineData.value = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: [0],
         datasets: [
             {
                 label: 'First Dataset',
@@ -75,7 +92,7 @@ watch(
     layoutConfig.theme,
     () => {
         setColorOptions();
-        setChart();
+        //setChart();
     },
     { immediate: true }
 );
@@ -94,8 +111,8 @@ const checkAuth = () => {
         <div class="grid p-fluid">
             <div class="col-12 xl:col-2">
                 <span class="p-float-label">
-                    <Dropdown id="dropdown" :options="cities" v-model="value8" optionLabel="name"></Dropdown>
-                    <label for="dropdown">Dropdown</label>
+                    <!-- <Dropdown id="dropdown" :options="cities" v-model="value8" optionLabel="name"></Dropdown>
+                    <label for="dropdown">Dropdown</label> -->
                 </span>
             </div>
         </div>
@@ -105,6 +122,7 @@ const checkAuth = () => {
             <div class="col-12 xl:col-6">
                 <div class="card">
                     <h5>Linear Chart</h5>
+                    <button @click="setChart">hola</button>
                     <Chart type="line" :data="lineData" :options="lineOptions"></Chart>
                 </div>
             </div>

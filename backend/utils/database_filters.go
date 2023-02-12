@@ -15,7 +15,7 @@ func GetLimitOffset(queryParams url.Values) (int, int, error) {
 		if err != nil {
 			return -1, -1, err
 		}
-		limit = int(math.Min(float64(500), float64(limit)))
+		limit = int(math.Min(float64(10000), float64(limit)))
 		limit = int(math.Max(float64(1), float64(limit)))
 	}
 

@@ -16,7 +16,7 @@ func ListGodotVersion(writer http.ResponseWriter, request *http.Request, params 
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var godotVersion []models.GodotVersion
+	var godotVersions []models.GodotVersion
 
 	queryParams := request.URL.Query()
 
@@ -44,14 +44,20 @@ func ListGodotVersion(writer http.ResponseWriter, request *http.Request, params 
 		return
 	}
 
-	result := gdb.Model(&models.GodotVersion{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&godotVersion)
+	result := gdb.Model(&models.GodotVersion{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&godotVersions)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(godotVersion)
+
+		var godotVersionsPublic []models.GodotVersionPublic
+		for _, godotversion := range godotVersions {
+			godotVersionsPublic = append(godotVersionsPublic, models.GodotVersionPublic{GodotVersion: godotversion})
+		}
+
+		json.NewEncoder(writer).Encode(godotVersionsPublic)
 	}
 }
 
@@ -71,7 +77,7 @@ func GetGodotVersion(writer http.ResponseWriter, request *http.Request, params h
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(godotVersion)
+		json.NewEncoder(writer).Encode(models.GodotVersionPublic{GodotVersion: godotVersion})
 	}
 }
 

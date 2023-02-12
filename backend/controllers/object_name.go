@@ -16,7 +16,7 @@ func ListObjectName(writer http.ResponseWriter, request *http.Request, params ht
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var objectName []models.ObjectName
+	var objectNames []models.ObjectName
 
 	queryParams := request.URL.Query()
 
@@ -36,14 +36,20 @@ func ListObjectName(writer http.ResponseWriter, request *http.Request, params ht
 		return
 	}
 
-	result := gdb.Model(&models.ObjectName{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&objectName)
+	result := gdb.Model(&models.ObjectName{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&objectNames)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(objectName)
+
+		var objectNamesPublic []models.ObjectNamePublic
+		for _, objectname := range objectNames {
+			objectNamesPublic = append(objectNamesPublic, models.ObjectNamePublic{ObjectName: objectname})
+		}
+
+		json.NewEncoder(writer).Encode(objectNamesPublic)
 	}
 }
 
@@ -63,7 +69,7 @@ func GetObjectName(writer http.ResponseWriter, request *http.Request, params htt
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(objectName)
+		json.NewEncoder(writer).Encode(models.ObjectNamePublic{ObjectName: objectName})
 	}
 }
 

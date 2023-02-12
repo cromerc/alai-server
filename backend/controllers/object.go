@@ -16,7 +16,7 @@ func ListObject(writer http.ResponseWriter, request *http.Request, params httpro
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var object []models.Object
+	var objects []models.Object
 
 	queryParams := request.URL.Query()
 
@@ -42,14 +42,20 @@ func ListObject(writer http.ResponseWriter, request *http.Request, params httpro
 		return
 	}
 
-	result := gdb.Model(&models.Object{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&object)
+	result := gdb.Model(&models.Object{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&objects)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(object)
+
+		var objectsPublic []models.ObjectPublic
+		for _, object := range objects {
+			objectsPublic = append(objectsPublic, models.ObjectPublic{Object: object})
+		}
+
+		json.NewEncoder(writer).Encode(objectsPublic)
 	}
 }
 
@@ -69,7 +75,7 @@ func GetObject(writer http.ResponseWriter, request *http.Request, params httprou
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(object)
+		json.NewEncoder(writer).Encode(models.ObjectPublic{Object: object})
 	}
 }
 

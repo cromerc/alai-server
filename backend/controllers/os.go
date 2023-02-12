@@ -16,7 +16,7 @@ func ListOS(writer http.ResponseWriter, request *http.Request, params httprouter
 	gdb := database.Connect()
 	defer database.Close(gdb)
 
-	var os []models.OS
+	var oses []models.OS
 
 	queryParams := request.URL.Query()
 
@@ -36,14 +36,20 @@ func ListOS(writer http.ResponseWriter, request *http.Request, params httprouter
 		return
 	}
 
-	result := gdb.Model(&models.OS{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&os)
+	result := gdb.Model(&models.OS{}).Where(whereClause).Order("ID asc").Limit(limit).Offset(offset).Find(&oses)
 	if result.Error != nil {
 		utils.JSONErrorOutput(writer, http.StatusBadRequest, result.Error.Error())
 		return
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(os)
+
+		var osesPublic []models.OSPublic
+		for _, os := range oses {
+			osesPublic = append(osesPublic, models.OSPublic{OS: os})
+		}
+
+		json.NewEncoder(writer).Encode(osesPublic)
 	}
 }
 
@@ -63,7 +69,7 @@ func GetOS(writer http.ResponseWriter, request *http.Request, params httprouter.
 	} else {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
-		json.NewEncoder(writer).Encode(os)
+		json.NewEncoder(writer).Encode(models.OSPublic{OS: os})
 	}
 }
 

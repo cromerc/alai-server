@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import auth from '../utils/Auth';
 
 const { onMenuToggle } = useLayout();
 
@@ -18,21 +19,21 @@ const toast = useToast();
 const menu = ref();
 const items = ref([
     {
-        label: 'Log out',
-        icon: 'pi pi-sign-out',
-        command: () => {
-            toast.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 });
-            localStorage.removeItem('token');
-            router.push('/');
-        }
-    },
-    {
         label: 'Change password',
         icon: 'pi pi-key',
         command: () => {
             changePasswordDialog.value = true;
             submitted.value = false;
             user.value = {};
+        }
+    },
+    {
+        label: 'Log out',
+        icon: 'pi pi-sign-out',
+        command: () => {
+            toast.add({ severity: 'warn', summary: 'Delete', detail: 'Data Deleted', life: 3000 });
+            localStorage.removeItem('token');
+            router.push('/');
         }
     }
 ]);
@@ -50,28 +51,40 @@ onBeforeUnmount(() => {
 });
 
 
-async function onClickPasswordChange() {
+const onClickPasswordChange = () => {
     submitted.value = true;
-    console.log(user.value);
     var pass =
-
     {
         password: user.value.current_password,
         new_password: user.value.new_password
     };
+    if (user.value.new_password != user.value.confirm_new_password) {
+        console.log("gola");
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Passwords are not the same', life: 3000 });
+        return;
+    }
+    savePassword(pass);
+}
+
+async function savePassword(pass) {
     var token = localStorage.getItem("token");
     var decoded = jwt_decode(token);
     try {
-        const response = await axios.patch(`http://localhost:3001/user/` + decoded.id, auth.getTokenHeader());
+        const response = await axios.patch(`http://localhost:3001/user/` + decoded.id, pass, auth.getTokenHeader());
         if (response.status !== 204) {
             console.error(response);
         }
+
     }
     catch (error) {
         console.error(error);
     }
 }
 
+const hideDialog = () => {
+    changePasswordDialog.value = false;
+    submitted.value = false;
+};
 
 
 const onTopBarMenuButton = () => {
@@ -129,29 +142,29 @@ const isOutsideClicked = (event) => {
 
         <Dialog v-model:visible="changePasswordDialog" :style="{ width: '450px' }" header="Change Password"
             :modal="true" class="p-fluid">
-
+            <Toast />
             <div class="field">
                 <label for="current_password">Current Password</label>
-                <InputText id="current_password" v-model.trim="user.current_password" required="true" autofocus
+                <Password id="current_password" v-model.trim="user.current_password" required="true" autofocus
                     :class="{ 'p-invalid': submitted && !user.current_password }" />
                 <small class="p-invalid" v-if="submitted && !user.current_password">Actual password is required.</small>
             </div>
             <div class="field">
                 <label for="new_password">New Password</label>
-                <InputText id="new_password" v-model.trim="user.new_password" required="true" autofocus
+                <Password id="new_password" v-model.trim="user.new_password" required="true"
                     :class="{ 'p-invalid': submitted && !user.new_password }" />
                 <small class="p-invalid" v-if="submitted && !user.new_password">New password is required.</small>
             </div>
             <div class="field">
                 <label for="confirm_new_password">Confirm new Password</label>
-                <InputText id="confirm_new_password" v-model.trim="user.confirm_new_password" required="true" autofocus
+                <Password id="confirm_new_password" v-model.trim="user.confirm_new_password" required="true"
                     :class="{ 'p-invalid': submitted && !user.confirm_new_password }" />
                 <small class="p-invalid" v-if="submitted && !user.confirm_new_password">Confirm the new password is
                     required.</small>
             </div>
             <template #footer>
                 <Button label="Cancel" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
-                <Button label="Save" icon="pi pi-check" class="p-button-text" @click="onClickPasswordChange" />
+                <Button label="Save" icon="pi pi-check" class="p-button-text" @click="onClickPasswordChange()" />
             </template>
         </Dialog>
     </div>

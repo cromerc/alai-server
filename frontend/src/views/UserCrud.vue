@@ -6,12 +6,12 @@ import axios from 'axios';
 import auth from '../utils/Auth';
 
 const toast = useToast();
-const products = ref(null);
+const users = ref(null);
 const productDialog = ref(false);
-const deleteProductDialog = ref(false);
-const deleteProductsDialog = ref(false);
+const deleteUserDialog = ref(false);
+const deleteUsersDialog = ref(false);
 const user = ref({});
-const selectedProducts = ref(null);
+const selectedUsers = ref(null);
 const dt = ref(null);
 const filters = ref({});
 const submitted = ref(false);
@@ -20,11 +20,10 @@ const checkAuth = () => {
     auth.checkToken(true);
 };
 
-async function onShowClick() {
+async function showTable() {
     try {
         const response = await axios.get(`http://localhost:3001/user`, auth.getTokenHeader());
-        console.log(response.data);
-        products.value = response.data;
+        users.value = response.data;
     }
     catch (error) {
         console.error(error);
@@ -54,6 +53,7 @@ async function onCreateClick() {
         if (response.status === 204) {
             toast.add({ severity: 'success', summary: 'Successful', detail: 'User Created', life: 3000 });
             productDialog.value = false;
+            showTable();
         }
         else {
             console.error(response);
@@ -70,6 +70,7 @@ onBeforeMount(() => {
 });
 onMounted(() => {
     checkAuth();
+    showTable();
 });
 
 const openNew = () => {
@@ -88,9 +89,9 @@ const hideDialogChange = () => {
     submitted.value = false;
 };
 
-const editProduct = (editProduct) => {
+const editUser = (editUser) => {
 
-    user.value = { ...editProduct };
+    user.value = { ...editUser };
     console.log(user);
     productDialogChange.value = true;
 };
@@ -108,6 +109,7 @@ async function onChangeUser() {
         if (response.status === 204) {
             toast.add({ severity: 'success', summary: 'Successful', detail: 'User Modified', life: 3000 });
             productDialogChange.value = false;
+            showTable();
         }
         else {
             console.error(response);
@@ -118,33 +120,34 @@ async function onChangeUser() {
     }
 }
 
-const confirmDeleteProduct = (editProduct) => {
-    user.value = editProduct;
-    deleteProductDialog.value = true;
+const confirmDeleteUser = (editUser) => {
+    user.value = editUser;
+    deleteUserDialog.value = true;
 };
 
-async function deleteProduct() {
+async function deleteUser() {
     try {
         const response = await axios.delete(`http://localhost:3001/user/` + user.value.ID, auth.getTokenHeader());
         if (response.status !== 204) {
             console.error(response);
         }
+        showTable();
     }
     catch (error) {
         console.error(error);
     }
-    products.value = products.value.filter((val) => val.ID !== user.value.ID);
-    deleteProductDialog.value = false;
+    users.value = users.value.filter((val) => val.ID !== user.value.ID);
+    deleteUserDialog.value = false;
     user.value = {};
     toast.add({ severity: 'success', summary: 'Successful', detail: 'User Deleted', life: 3000 });
 };
 
 
 const confirmDeleteSelected = () => {
-    deleteProductsDialog.value = true;
+    deleteUsersDialog.value = true;
 };
-const deleteSelectedProducts = () => {
-    selectedProducts.value.forEach(element => {
+const deleteSelectedUsers = () => {
+    selectedUsers.value.forEach(element => {
         try {
             const response = axios.delete(`http://localhost:3001/user/` + element.ID, auth.getTokenHeader());
             if (response.status !== 204) {
@@ -156,12 +159,12 @@ const deleteSelectedProducts = () => {
         }
 
     });
-    console.log(selectedProducts.value);
+    console.log(selectedUsers.value);
 
-    products.value = products.value.filter((val) => !selectedProducts.value.includes(val));
-    deleteProductsDialog.value = false;
-    selectedProducts.value = null;
-    toast.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
+    users.value = users.value.filter((val) => !selectedUsers.value.includes(val));
+    deleteUsersDialog.value = false;
+    selectedUsers.value = null;
+    toast.add({ severity: 'success', summary: 'Successful', detail: 'Users Deleted', life: 3000 });
 };
 
 const initFilters = () => {
@@ -180,21 +183,19 @@ const initFilters = () => {
                     <template v-slot:start>
                         <div class="my-2">
                             <Button label="New" icon="pi pi-plus" class="p-button-success mr-2" @click="openNew" />
-                            <Button label="Show" icon="pi pi-eye" class="p-button-success mr-2" @click="onShowClick" />
                             <Button label="Delete" icon="pi pi-trash" class="p-button-danger"
-                                @click="confirmDeleteSelected"
-                                :disabled="!selectedProducts || !selectedProducts.length" />
+                                @click="confirmDeleteSelected" :disabled="!selectedUsers || !selectedUsers.length" />
                         </div>
                     </template>
 
 
                 </Toolbar>
 
-                <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" dataKey="ID"
-                    :paginator="true" :rows="10" :filters="filters"
+                <DataTable ref="dt" :value="users" v-model:selection="selectedUsers" dataKey="ID" :paginator="true"
+                    :rows="10" :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
                     responsiveLayout="scroll">
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -229,9 +230,9 @@ const initFilters = () => {
                     <Column headerStyle="min-width:10rem;">
                         <template #body="slotProps">
                             <Button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                                @click="editProduct(slotProps.data)" />
+                                @click="editUser(slotProps.data)" />
                             <Button icon="pi pi-trash" class="p-button-rounded p-button-warning mt-2"
-                                @click="confirmDeleteProduct(slotProps.data)" />
+                                @click="confirmDeleteUser(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
@@ -287,29 +288,26 @@ const initFilters = () => {
                     </template>
                 </Dialog>
 
-                <Dialog v-model:visible="deleteProductDialog" :style="{ width: '450px' }" header="Confirm"
-                    :modal="true">
+                <Dialog v-model:visible="deleteUserDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
                     <div class="flex align-items-center justify-content-center">
                         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
                         <span v-if="user">Are you sure you want to delete <b>{{ user.name }}</b>?</span>
                     </div>
                     <template #footer>
-                        <Button label="No" icon="pi pi-times" class="p-button-text"
-                            @click="deleteProductDialog = false" />
-                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteProduct" />
+                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteUserDialog = false" />
+                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteUser" />
                     </template>
                 </Dialog>
 
-                <Dialog v-model:visible="deleteProductsDialog" :style="{ width: '450px' }" header="Confirm"
-                    :modal="true">
+                <Dialog v-model:visible="deleteUsersDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
                     <div class="flex align-items-center justify-content-center">
                         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                        <span v-if="user">Are you sure you want to delete the selected products?</span>
+                        <span v-if="user">Are you sure you want to delete the selected users?</span>
                     </div>
                     <template #footer>
                         <Button label="No" icon="pi pi-times" class="p-button-text"
-                            @click="deleteProductsDialog = false" />
-                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteSelectedProducts" />
+                            @click="deleteUsersDialog = false" />
+                        <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteSelectedUsers" />
                     </template>
                 </Dialog>
             </div>

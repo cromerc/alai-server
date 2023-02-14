@@ -8,7 +8,6 @@ import jwt_decode from 'jwt-decode';
 import auth from '../utils/Auth';
 
 const { onMenuToggle } = useLayout();
-
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
 const changePasswordDialog = ref(false);
@@ -58,8 +57,7 @@ const onClickPasswordChange = () => {
         password: user.value.current_password,
         new_password: user.value.new_password
     };
-    if (user.value.new_password != user.value.confirm_new_password) {
-        console.log("gola");
+    if (user.value.new_password !== user.value.confirm_new_password) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Passwords are not the same', life: 3000 });
         return;
     }
@@ -67,6 +65,7 @@ const onClickPasswordChange = () => {
 }
 
 async function savePassword(pass) {
+    submitted.value = true;
     var token = localStorage.getItem("token");
     var decoded = jwt_decode(token);
     try {
@@ -145,21 +144,23 @@ const isOutsideClicked = (event) => {
             <Toast />
             <div class="field">
                 <label for="current_password">Current Password</label>
-                <Password id="current_password" v-model.trim="user.current_password" required="true" autofocus
+                <Password id="current_password" v-model.trim="user.current_password" autofocus
                     :class="{ 'p-invalid': submitted && !user.current_password }" />
-                <small class="p-invalid" v-if="submitted && !user.current_password">Actual password is required.</small>
+                <small class="p-invalid" v-if="submitted && !user.current_password">Current password is
+                    required.</small>
             </div>
             <div class="field">
                 <label for="new_password">New Password</label>
-                <Password id="new_password" v-model.trim="user.new_password" required="true"
+                <Password id="new_password" v-model.trim="user.new_password"
                     :class="{ 'p-invalid': submitted && !user.new_password }" />
                 <small class="p-invalid" v-if="submitted && !user.new_password">New password is required.</small>
             </div>
             <div class="field">
                 <label for="confirm_new_password">Confirm new Password</label>
-                <Password id="confirm_new_password" v-model.trim="user.confirm_new_password" required="true"
+                <Password id="confirm_new_password" v-model.trim="user.confirm_new_password"
                     :class="{ 'p-invalid': submitted && !user.confirm_new_password }" />
-                <small class="p-invalid" v-if="submitted && !user.confirm_new_password">Confirm the new password is
+                <small class="p-invalid" v-if="submitted && !user.confirm_new_password">Confirm the new password
+                    is
                     required.</small>
             </div>
             <template #footer>

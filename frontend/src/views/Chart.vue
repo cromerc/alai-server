@@ -13,6 +13,8 @@ let textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary'
 let surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 const time_elapsed = ref([]);
 const coins = ref([]);
+const games = ref([]);
+const selectedGames = ref();
 
 const lineData = ref(null);
 const lineOptions = ref(null);
@@ -23,9 +25,29 @@ const setColorOptions = () => {
     textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
     surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 };
+
+const probando = () => {
+    console.log(selectedGames.value)
+}
+
+async function getGames() {
+    try {
+        const response = await axios.get(`http://localhost:3001/game?limit=5000`);
+        games.value = response.data.map(game_id => {
+            return game_id.ID;
+        });
+    }
+    catch (error) {
+        console.error(error);
+    }
+}
+
 async function setChart() {
     try {
-        const response = await axios.get(`http://localhost:3001/frame?limit=5000&game_id=4`);
+        if (selectedGames.value === undefined) {
+            return;
+        }
+        const response = await axios.get(`http://localhost:3001/frame?limit=5000&game_id=` + selectedGames.value);
         time_elapsed.value = response.data.map(frame => {
             return Math.floor(frame.elapsed_time / 1000);
         });
@@ -104,6 +126,7 @@ watch(
 onMounted(() => {
     checkAuth();
     setChart();
+    getGames();
 })
 
 const checkAuth = () => {
@@ -116,6 +139,8 @@ const checkAuth = () => {
         <div class="grid p-fluid">
             <div class="col-12 xl:col-2">
                 <span class="p-float-label">
+                    <Dropdown v-model="selectedGames" :options="games" optionLabel="" optionValue=""
+                        placeholder="Select a game session" @change="setChart" />
                 </span>
             </div>
         </div>

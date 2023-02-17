@@ -40,7 +40,8 @@ var auth = {
                         if (callback !== null) {
                             callback(false);
                         }
-                        router.replace("/");
+                        localStorage.removeItem("token");
+                        router.replace("/login");
                     }
                     else {
                         if (callback !== null) {

@@ -76,7 +76,12 @@ async function savePassword(pass) {
 
     }
     catch (error) {
-        console.error(error);
+        if (error.response.status === 400) {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Current password is incorrect', life: 3000 });
+        }
+        else {
+            console.log(error);
+        }
     }
 }
 
@@ -139,8 +144,8 @@ const isOutsideClicked = (event) => {
             <Menu id="overlay_menu" ref="menu" :model="items" :popup="true" />
         </div>
 
-        <Dialog v-model:visible="changePasswordDialog" :style="{ width: '450px' }" header="Change Password"
-            :modal="true" class="p-fluid">
+        <Dialog v-model:visible="changePasswordDialog" :style="{ width: '450px' }" header="Change Password" :modal="true"
+            class="p-fluid">
             <Toast />
             <div class="field">
                 <label for="current_password">Current Password</label>
@@ -171,6 +176,4 @@ const isOutsideClicked = (event) => {
     </div>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

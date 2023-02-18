@@ -2,9 +2,11 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { useToast } from 'primevue/usetoast';
 const username = ref('');
 const password = ref('');
 const router = useRouter();
+const toast = useToast();
 
 async function onLoginClick() {
     var login =
@@ -20,7 +22,12 @@ async function onLoginClick() {
         }
     }
     catch (error) {
-        console.error(error);
+        if (error.response.status === 400) {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Incorrect Password', life: 3000 });
+        }
+        else {
+            console.log(error);
+        }
     }
 }
 
@@ -33,8 +40,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div
-        class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+    <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
         <div class="flex flex-column align-items-center justify-content-center">
 
             <div
@@ -43,7 +49,7 @@ onMounted(() => {
                     <div class="text-center mb-5">
                         <span class="text-600 font-medium">Log in to continue</span>
                     </div>
-
+                    <Toast />
                     <div>
                         <label for="username1" class="block text-900 text-xl font-medium mb-2">Username</label>
                         <InputText id="username1" type="text" placeholder="Username" class="w-full md:w-30rem mb-5"

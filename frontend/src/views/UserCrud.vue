@@ -7,7 +7,7 @@ import auth from '../utils/Auth';
 
 const toast = useToast();
 const users = ref(null);
-const productDialog = ref(false);
+const userDialog = ref(false);
 const deleteUserDialog = ref(false);
 const deleteUsersDialog = ref(false);
 const user = ref({});
@@ -15,7 +15,7 @@ const selectedUsers = ref(null);
 const dt = ref(null);
 const filters = ref({});
 const submitted = ref(false);
-const productDialogChange = ref(false);
+const userDialogChange = ref(false);
 const checkAuth = () => {
     auth.checkToken(true);
 };
@@ -52,7 +52,7 @@ async function onCreateClick() {
 
         if (response.status === 204) {
             toast.add({ severity: 'success', summary: 'Successful', detail: 'User Created', life: 3000 });
-            productDialog.value = false;
+            userDialog.value = false;
             showTable();
         }
         else {
@@ -76,16 +76,16 @@ onMounted(() => {
 const openNew = () => {
     user.value = {};
     submitted.value = false;
-    productDialog.value = true;
+    userDialog.value = true;
 };
 
 const hideDialog = () => {
-    productDialog.value = false;
+    userDialog.value = false;
     submitted.value = false;
 };
 
 const hideDialogChange = () => {
-    productDialogChange.value = false;
+    userDialogChange.value = false;
     submitted.value = false;
 };
 
@@ -93,7 +93,7 @@ const editUser = (editUser) => {
 
     user.value = { ...editUser };
     console.log(user);
-    productDialogChange.value = true;
+    userDialogChange.value = true;
 };
 
 async function onChangeUser() {
@@ -108,7 +108,7 @@ async function onChangeUser() {
 
         if (response.status === 204) {
             toast.add({ severity: 'success', summary: 'Successful', detail: 'User Modified', life: 3000 });
-            productDialogChange.value = false;
+            userDialogChange.value = false;
             showTable();
         }
         else {
@@ -183,8 +183,8 @@ const initFilters = () => {
                     <template v-slot:start>
                         <div class="my-2">
                             <Button label="New" icon="pi pi-plus" class="p-button-success mr-2" @click="openNew" />
-                            <Button label="Delete" icon="pi pi-trash" class="p-button-danger"
-                                @click="confirmDeleteSelected" :disabled="!selectedUsers || !selectedUsers.length" />
+                            <Button label="Delete" icon="pi pi-trash" class="p-button-danger" @click="confirmDeleteSelected"
+                                :disabled="!selectedUsers || !selectedUsers.length" />
                         </div>
                     </template>
 
@@ -195,8 +195,7 @@ const initFilters = () => {
                     :rows="10" :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
-                    responsiveLayout="scroll">
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users" responsiveLayout="scroll">
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                             <h5 class="m-0">Manage Users</h5>
@@ -214,8 +213,7 @@ const initFilters = () => {
                             {{ slotProps.data.name }}
                         </template>
                     </Column>
-                    <Column field="username" header="Username" :sortable="true"
-                        headerStyle="width:14%; Fin-width:10rem;">
+                    <Column field="username" header="Username" :sortable="true" headerStyle="width:14%; Fin-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Username</span>
                             {{ slotProps.data.username }}
@@ -237,7 +235,7 @@ const initFilters = () => {
                     </Column>
                 </DataTable>
 
-                <Dialog v-model:visible="productDialog" :style="{ width: '450px' }" header="New User" :modal="true"
+                <Dialog v-model:visible="userDialog" :style="{ width: '450px' }" header="New User" :modal="true"
                     class="p-fluid">
                     <div class="field">
                         <label for="name">Name</label>
@@ -262,8 +260,8 @@ const initFilters = () => {
                         <Button label="Save" icon="pi pi-check" class="p-button-text" @click="onCreateClick" />
                     </template>
                 </Dialog>
-                <Dialog v-model:visible="productDialogChange" :style="{ width: '450px' }" header="New User"
-                    :modal="true" class="p-fluid">
+                <Dialog v-model:visible="userDialogChange" :style="{ width: '450px' }" header="New User" :modal="true"
+                    class="p-fluid">
                     <div class="field">
                         <label for="name">Name</label>
                         <InputText id="name" v-model.trim="user.name" required="true" autofocus
@@ -305,8 +303,7 @@ const initFilters = () => {
                         <span v-if="user">Are you sure you want to delete the selected users?</span>
                     </div>
                     <template #footer>
-                        <Button label="No" icon="pi pi-times" class="p-button-text"
-                            @click="deleteUsersDialog = false" />
+                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteUsersDialog = false" />
                         <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteSelectedUsers" />
                     </template>
                 </Dialog>

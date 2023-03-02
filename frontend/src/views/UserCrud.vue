@@ -19,10 +19,12 @@ const userDialogChange = ref(false);
 const checkAuth = () => {
     auth.checkToken(true);
 };
+const url = new URL(window.location.href);
+const api = (url.port == "5173") ? "http://localhost:3001" : "/api";
 
 async function showTable() {
     try {
-        const response = await axios.get(`http://localhost:3001/user`, auth.getTokenHeader());
+        const response = await axios.get(api + `/user`, auth.getTokenHeader());
         users.value = response.data;
     }
     catch (error) {
@@ -48,7 +50,7 @@ async function onCreateClick() {
         email: user.value.email
     };
     try {
-        const response = await axios.post(`http://localhost:3001/user`, newUser, auth.getTokenHeader());
+        const response = await axios.post(api + `/user`, newUser, auth.getTokenHeader());
 
         if (response.status === 204) {
             toast.add({ severity: 'success', summary: 'Successful', detail: 'User Created', life: 3000 });
@@ -104,7 +106,7 @@ async function onChangeUser() {
         email: user.value.email
     };
     try {
-        const response = await axios.patch(`http://localhost:3001/user/` + user.value.ID, changeUser, auth.getTokenHeader());
+        const response = await axios.patch(api + `/user/` + user.value.ID, changeUser, auth.getTokenHeader());
 
         if (response.status === 204) {
             toast.add({ severity: 'success', summary: 'Successful', detail: 'User Modified', life: 3000 });
@@ -127,7 +129,7 @@ const confirmDeleteUser = (editUser) => {
 
 async function deleteUser() {
     try {
-        const response = await axios.delete(`http://localhost:3001/user/` + user.value.ID, auth.getTokenHeader());
+        const response = await axios.delete(api + `/user/` + user.value.ID, auth.getTokenHeader());
         if (response.status !== 204) {
             console.error(response);
         }
@@ -149,7 +151,7 @@ const confirmDeleteSelected = () => {
 const deleteSelectedUsers = () => {
     selectedUsers.value.forEach(element => {
         try {
-            const response = axios.delete(`http://localhost:3001/user/` + element.ID, auth.getTokenHeader());
+            const response = axios.delete(api + `/user/` + element.ID, auth.getTokenHeader());
             if (response.status !== 204) {
                 console.error(response);
             }

@@ -19,10 +19,12 @@ const submitted = ref(false);
 const checkAuth = () => {
     auth.checkToken(true);
 };
+const url = new URL(window.location.href);
+const api = (url.port == "5173") ? "http://localhost:3001" : "/api";
 
 async function showTable() {
     try {
-        const response = await axios.get(`http://localhost:3001/os`);
+        const response = await axios.get(api + `/os`);
         console.log(response.data);
         users.value = response.data;
     }
@@ -41,7 +43,7 @@ async function onCreateClick() {
         name: os.value.name
     };
     try {
-        const response = await axios.post(`http://localhost:3001/os`, newOS, auth.getTokenHeader());
+        const response = await axios.post(api + `/os`, newOS, auth.getTokenHeader());
 
         if (response.status === 204) {
             toast.add({ severity: 'success', summary: 'Successful', detail: 'OS Created', life: 3000 });
@@ -94,7 +96,7 @@ async function onChangeOS() {
     };
     console.log(os.value.ID);
     try {
-        const response = await axios.patch(`http://localhost:3001/os/` + os.value.ID, changeOS, auth.getTokenHeader());
+        const response = await axios.patch(api + `/os/` + os.value.ID, changeOS, auth.getTokenHeader());
 
         if (response.status === 204) {
             toast.add({ severity: 'success', summary: 'Successful', detail: 'OS Modified', life: 3000 });
@@ -117,7 +119,7 @@ const confirmDeleteUser = (editUser) => {
 
 async function deleteUser() {
     try {
-        const response = await axios.delete(`http://localhost:3001/os/` + os.value.ID, auth.getTokenHeader());
+        const response = await axios.delete(api + `/os/` + os.value.ID, auth.getTokenHeader());
         if (response.status !== 204) {
             console.error(response);
         }
@@ -139,7 +141,7 @@ const confirmDeleteSelected = () => {
 const deleteSelectedUsers = () => {
     selectedUsers.value.forEach(element => {
         try {
-            const response = axios.delete(`http://localhost:3001/os/` + element.ID, auth.getTokenHeader());
+            const response = axios.delete(api + `/os/` + element.ID, auth.getTokenHeader());
             if (response.status !== 204) {
                 console.error(response);
             }
@@ -173,8 +175,8 @@ const initFilters = () => {
                     <template v-slot:start>
                         <div class="my-2">
                             <Button label="New" icon="pi pi-plus" class="p-button-success mr-2" @click="openNew" />
-                            <Button label="Delete" icon="pi pi-trash" class="p-button-danger"
-                                @click="confirmDeleteSelected" :disabled="!selectedUsers || !selectedUsers.length" />
+                            <Button label="Delete" icon="pi pi-trash" class="p-button-danger" @click="confirmDeleteSelected"
+                                :disabled="!selectedUsers || !selectedUsers.length" />
                         </div>
                     </template>
 
@@ -185,8 +187,7 @@ const initFilters = () => {
                     :rows="10" :filters="filters"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                     :rowsPerPageOptions="[5, 10, 25]"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
-                    responsiveLayout="scroll">
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users" responsiveLayout="scroll">
                     <template #header>
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                             <h5 class="m-0">Manage Users</h5>
@@ -258,8 +259,7 @@ const initFilters = () => {
                         <span v-if="os">Are you sure you want to delete the selected users?</span>
                     </div>
                     <template #footer>
-                        <Button label="No" icon="pi pi-times" class="p-button-text"
-                            @click="deleteUsersDialog = false" />
+                        <Button label="No" icon="pi pi-times" class="p-button-text" @click="deleteUsersDialog = false" />
                         <Button label="Yes" icon="pi pi-check" class="p-button-text" @click="deleteSelectedUsers" />
                     </template>
                 </Dialog>

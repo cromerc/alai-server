@@ -7,6 +7,8 @@ const username = ref('');
 const password = ref('');
 const router = useRouter();
 const toast = useToast();
+const url = new URL(window.location.href);
+const api = (url.port == "5173") ? "http://localhost:3001" : "/api";
 
 async function onLoginClick() {
     var login =
@@ -15,7 +17,7 @@ async function onLoginClick() {
         password: password.value
     };
     try {
-        const response = await axios.post(`http://localhost:3001/login`, login);
+        const response = await axios.post(api + `/login`, login);
         if (response.status === 200) {
             localStorage.setItem('token', response.data.token);
             router.push('/home');

@@ -20,7 +20,7 @@ const checkAuth = () => {
     auth.checkToken(true);
 };
 const url = new URL(window.location.href);
-const api = (url.port == "5173") ? "http://localhost:3001" : "/api";
+const api = (url.port == "5173") ? "http://localhost:3001" : "/api/v1";
 
 async function showTable() {
     try {

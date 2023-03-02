@@ -88,7 +88,7 @@ const onClickLinux = () => {
                 <div class="grid mt-8 pb-2 md:pb-8">
                     <div class="flex justify-content-center col-12 lg:col-6  p-0 flex-order-1 lg:flex-order-0"
                         style="border-radius: 8px">
-                        <img src="public/images/alai.png" class="w-11" alt="alai screenshot" />
+                        <img src="@/assets/images/alai.png" class="w-11" alt="alai screenshot" />
                     </div>
 
                     <div class="col-12 lg:col-6 my-auto flex flex-column lg:align-items-end text-center lg:text-right">
@@ -118,7 +118,7 @@ const onClickLinux = () => {
 
                     <div class="flex align-items-center justify-content-end flex-order-1 sm:flex-order-2 col-12 lg:col-6  p-0"
                         style="border-radius: 8px">
-                        <img src="public/images/obelisk.jpg" class="flex w-11" alt="obelisk" width="100" height="100" />
+                        <img src="@/assets/images/obelisk.jpg" class="flex w-11" alt="obelisk" width="100" height="100" />
                     </div>
                 </div>
             </div>

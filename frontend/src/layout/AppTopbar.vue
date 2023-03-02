@@ -8,7 +8,7 @@ import jwt_decode from 'jwt-decode';
 import auth from '../utils/Auth';
 
 const url = new URL(window.location.href);
-const api = (url.port == "5173") ? "http://localhost:3001" : "/api";
+const api = (url.port == "5173") ? "http://localhost:3001" : "/api/v1";
 const { onMenuToggle } = useLayout();
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);

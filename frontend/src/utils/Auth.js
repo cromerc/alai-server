@@ -13,7 +13,7 @@ var auth = {
     },
     checkToken(redirect = true, callback = null) {
         const url = new URL(window.location.href);
-        const api = (url.port == "5173") ? "http://localhost:3001" : "/api";
+        const api = (url.port == "5173") ? "http://localhost:3001" : "/api/v1";
 
         const config = this.getTokenHeader();
 

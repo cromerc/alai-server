@@ -8,7 +8,7 @@ const password = ref('');
 const router = useRouter();
 const toast = useToast();
 const url = new URL(window.location.href);
-const api = (url.port == "5173") ? "http://localhost:3001" : "/api";
+const api = (url.port == "5173") ? "http://localhost:3001" : "/api/v1";
 
 async function onLoginClick() {
     var login =

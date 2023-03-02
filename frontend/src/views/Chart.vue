@@ -24,10 +24,13 @@ const setColorOptions = () => {
     textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
     surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 };
+const url = new URL(window.location.href);
+const api = (url.port == "5173") ? "http://localhost:3001" : "/api";
+
 
 async function getGames() {
     try {
-        const response = await axios.get(`http://localhost:3001/game?limit=5000`);
+        const response = await axios.get(api + `/game?limit=5000`);
         games.value = response.data.map(game_id => {
             return game_id.ID;
         });
@@ -42,7 +45,7 @@ async function getFrames() {
         if (selectedGame.value === undefined) {
             return;
         }
-        const response = await axios.get(`http://localhost:3001/frame?limit=5000&game_id=` + selectedGame.value);
+        const response = await axios.get(api + `/frame?limit=5000&game_id=` + selectedGame.value);
         if (response.data[response.data.length - 1].elapsed_time >= 10000) {
             ms.value = false;
         }

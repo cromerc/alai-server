@@ -7,6 +7,8 @@ import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import auth from '../utils/Auth';
 
+const url = new URL(window.location.href);
+const api = (url.port == "5173") ? "http://localhost:3001" : "/api";
 const { onMenuToggle } = useLayout();
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
@@ -69,7 +71,7 @@ async function savePassword(pass) {
     var token = localStorage.getItem("token");
     var decoded = jwt_decode(token);
     try {
-        const response = await axios.patch(`http://localhost:3001/user/` + decoded.id, pass, auth.getTokenHeader());
+        const response = await axios.patch(api + `/user/` + decoded.id, pass, auth.getTokenHeader());
         if (response.status !== 204) {
             console.error(response);
         }

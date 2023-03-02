@@ -42,12 +42,6 @@ const onClickLinux = () => {
                             </a>
                         </li>
                         <li>
-                            <a @click="smoothScroll('#moreinfo')"
-                                class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple>
-                                <span>More info</span>
-                            </a>
-                        </li>
-                        <li>
                             <a @click="smoothScroll('#downloads')"
                                 class="flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3 p-ripple" v-ripple>
                                 <span>Downloads</span>
